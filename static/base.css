@@ -1,0 +1,26 @@
+* {
+    margin:0;
+    padding:0;
+}
+body {
+	margin-top: 70px!important;
+}
+
+ul {
+	list-style-type: none!important;
+}
+
+ul.navbar-right{
+	margin-right: 0;
+}
+
+.unread-count{
+	background-color: #d9534f!important;
+}
+
+.search-form button[type="submit"]{
+	background-color: none!important;
+	border:none!important;
+	margin-left: -34px!important;
+	color: #aaa!important;
+}

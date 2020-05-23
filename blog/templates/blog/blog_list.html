@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+{% block title %}乒乒乓乓{% endblock %}
+{% block nav_blog_active %}active{% endblock %}
+{% load staticfiles %}
+<!-- 加载模板标签 -->
+{% load comment_tags %}
+{% load likes_tags %}
+{% block head_extra %}
+    <link rel="stylesheet" type="text/css" href="{% static 'blog.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blogList.css' %}">
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+{% endblock %}
+    <!-- 页面内容 -->
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">{% block blog_list_title %}博客列表{% endblock %}</div>
+                    <div class="panel-body">
+                        {% for blog in page_of_blogs %}
+                            <div class="blog">
+                                <h3><a href="{% url 'blog_detail' blog.pk %}">{{blog.title}}</a></h3>
+                                <div class="blog-info">
+                                    <p><span class="glyphicon glyphicon-user" aria-hidden="true"></span>{{blog.author}}</p>
+                                    <p><span class="glyphicon glyphicon-time" aria-hidden="true"></span>{{blog.created_time|date:"Y-m-d"}}</p>
+                                    <!-- 将日期格式进行转换 -->
+                                     <p><span class="glyphicon glyphicon-star" aria-hidden="true"></span><a href="{% url 'blogs_type_with' blog.blog_type.pk%}">{{blog.blog_type}} </a>&nbsp;&nbsp;阅读({{ blog.get_read_num }})&nbsp;&nbsp;评论({% get_comment_count blog%}) &nbsp;&nbsp;点赞({% get_like_count blog %})
+                                        <!-- &nbsp;这里表示空格 -->
+                                    </p>
+                                </div>
+                                <p>{{blog.content|striptags|truncatechars:90}}</p>
+                                <!-- 处理显示的最大字数 -->
+                            </div>
+                        {% empty %}
+                            <div class="blog">
+                                <h3>--暂无博客，敬请期待--</h3>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="paginator">
+                  <ul class="pagination">
+                    <li>{# 页面跳转上一页 #}
+                        {% if page_of_blogs.has_previous %}
+                        <!-- 判断是否有上一页，有则左箭头可以跳转 -->
+                            <a href="?page={{page_of_blogs.previous_page_number}}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        {% else %}
+                            <span aria-hidden="true">&laquo;</span>
+                        {% endif %}
+                    </li>{# 全部页面 #}
+                    {% for page_num in page_range %}
+                    <!-- 中间的页码 -->
+                        {% if page_num == page_of_blogs.number %}
+                        <!-- 若页码为当前页面则高亮 -->
+                            <li class="active"><span>{{page_num}}</span></li>
+                        {% else %}
+                            {% if page_num == '...' %}
+                            <!-- 页码省略 -->
+                                <li ><span>{{page_num}}</span></li>
+                            {% else %}
+                            <!-- 页码不为省略时，添加跳转 -->
+                                <li><a href="?page={{page_num}}">{{page_num}}</a></li>
+                            {% endif %}
+                        {% endif %}
+
+                    {% endfor %}
+                    <li>{# 页面跳转下一页 #}
+                        {% if page_of_blogs.has_next %}
+                        <!-- 判断是否有下一页，有则右箭头可以跳转 -->
+                            <a href="?page={{page_of_blogs.next_page_number}}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        {% else %}
+                            <span aria-hidden="true">&raquo;</span>
+                        {% endif %}
+                    </li>
+                  </ul>
+                  <p>
+                      当前是{{page_of_blogs.number}}页,一共有{{page_of_blogs.paginator.num_pages}}页
+                  </p>
+                </div>
+                <div class="post-area">
+                    <h3>发帖</h3>
+                    {% if user.is_authenticated %}
+                    <!-- 判断是否登录 -->
+                        <form id="post_form" action="{% url 'update_post'%}" method="POST" style="overflow: hidden;" ENCTYPE="multipart/form-data">
+                            {% csrf_token %}
+                            <!-- 防止跨站请求伪造 -->
+                            <div>
+                                <input type="submit" value="发帖" class="btn btn-primary pull-right" >
+                            </div>
+                            <div class="postBlog">
+                                <div class="form-group">
+                                    <label for="post_title" >{{ user.username }},欢迎发帖~~</label>
+                                    <input id="post_title" type="text" name="title" class="form-control" placeholder="标题">
+                                    <textarea id="post_text" name="content" class="form-control" placeholder="内容" rows="5"></textarea>
+                                    <span id="post_error" class="text-danger pull-left"></span>
+                                </div>
+                                <br>
+                                <p>类型:
+                                    <select name="blog_type">
+                                    {% for blog_type in blog_types %}
+                                    <option>{{blog_type.type_name}}</option>
+                                    {% endfor %}
+                                    </select>
+                                </p>
+                                <div class="picDiv">
+                                    <!-- 上传图片 -->
+                                    <div class="float">
+                                        <div class="delete op">
+                                            <!-- 删除 -->
+                                            delete
+                                        </div>
+                                        <input type="file" name="file" id="file" class="file">
+                                        <!-- 添加图片文件 -->
+                                        <div class="text-detail">
+                                            <span>+</span>
+                                            <p>点击上传</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="addImg"></div>
+                            </div>
+                        </form>
+                    {% else %}
+                    <!-- 跳转到登录注册页面 -->
+                        未登录,登陆之后方可发帖
+                        <a class="btn btn-primary" href="{% url 'login' %}?from={{ request.get_full_path }}">登录</a>
+                        <span>or</span>
+                        <a class="btn btn-danger" href="{% url 'register' %}?from={{ request.get_full_path }}">注册</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="hidden-xs col-sm-4 col-md-4">
+                <div class="panel panel-default">
+                    <!-- 按类型归类 -->
+                  <div class="panel-heading">博客分类</div>
+                  <div class="panel-body">
+                    <ul class="blogs-type">
+                    {% for blog_type in blog_types %}
+                        <li><a href="{% url 'blogs_type_with' blog_type.pk %}">
+                        {{blog_type.type_name}}({{blog_type.blog_count}})
+                        </a></li>
+                    {% empty %}
+                        <li>暂无更多</li>
+                    {% endfor %}
+                    </ul>       
+                  </div>
+                </div>
+                <!-- 以下为日期归档，不过应该不会用到 -->
+                <!-- <div class="panel panel-default">
+                    <div class="panel-heading">日期归档</div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for blog_date,blog_count in blog_dates.items %}
+                                <a href="{% url 'blogs_with_date' blog_date.year blog_date.month %}">
+                                    <li>{{ blog_date|date:"Y年m月" }}({{blog_count}})</li>
+                                </a>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>   -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script_extends %}
+    <script type="text/javascript">
+        window.onload = function(){
+            // 上传图片处理方法
+            var formData = new FormData();
+            var num = 1;
+            var iflast = 0;
+            // 筛选出图片列表下的所有file类标签添加处理方法(包括尚未生成的)
+            $(".picDiv").on("change",".file",function(){
+                // 当子元素的文件发生变化时的方法
+                var docObj = $(this)[0];
+                var picDiv = $(this).parents(".picDiv");
+                // 图片列表
+                var fileList = docObj.files;
+                // 图片文件
+                var contain = $(this).parents(".float");
+                // 图片容器
+                var icon = $(this).next();
+                
+                icon.attr("class","op");
+                // 为了不挤掉图片不让其显示
+                // $(this).attr("class","op");
+                $(this).css("display","none");
+                // 把input隐藏掉
+                var reader = new FileReader();
+                reader.readAsDataURL(fileList[0]);
+                // 获取文件的url
+                reader.fileName = fileList[0].name;
+                reader.onload = function(e){
+                    var div = document.createElement('div');
+                    div.innerHTML = '<div class="delete">delete</div><div class="result"><img class="subPic" src="'+this.result+'" alt="'+this.fileName+'"/></div>';
+                    contain.append(div);
+                    // 将图片显示出来
+                    var img = div.getElementsByTagName('img')[0];
+                    // 图片的加载方法
+                    img.onload = function(){
+                        var nowHeight = ReSizePic(this);
+                        this.parentNode.style.display = 'block';
+                        var oParent = this.parentNode;
+                        if(nowHeight){
+                            oParent.style.paddingTop = (oParent.offsetHeight - nowHeight)/2 + 'px';
+                        }
+                    }
+                    // 图片的删除方法
+                    div.onclick = function(){
+                        contain.remove();
+                        // 图片到达上限时显示添加的修正
+                        if(num>5){
+                            var picHtml = "<div class='float'><div class='delete op'>delete</div><input type='file' name='file"+num+"' id='file"+num+"' class='file'><div class='text-detail'><span>+</span><p>点击上传</p></div></div>";
+                            picDiv.append(picHtml);
+                            iflast = 1;
+                        }
+                        num-=1;
+                        if(num<=4){
+                            iflast=0;
+                        }
+                        
+                    }
+                }
+                num+=1;
+                if(num>5){
+                    return false;
+                }
+                if(iflast){
+                    return false;
+                }
+                // 添加完图片后要生成新的添加图片的容器
+                var picHtml = "<div class='float'><div class='delete op'>delete</div><input type='file' name='file"+num+"' id='file"+num+"' class='file'><div class='text-detail'><span>+</span><p>点击上传</p></div></div>";
+                // 将新容器添加在列表内
+                picDiv.append(picHtml);
+            })
+        }
+        // 处理表格的方法
+        $("#post_form").submit(function(){
+            var formData = new FormData();
+            $("#post_error").text('');
+            // 判断标题是否为空
+            if($('input[name="title"]').val().trim()==''){
+                $("#post_error").text('标题不能为空');
+                return false;
+            }
+            // 判断内容是否为空
+            if($('textarea[name="content"]').val().trim()==''){
+                $("#post_error").text('内容不能为空');
+                return false;
+            }
+            // 将图片列表内的图片文件全部取出一同添加到表格中
+            $(".file").each(function(){
+                formData.append('image',$(this)[0].files[0]);
+            })
+            formData.append('title',$('input[name="title"]').val());
+            formData.append('text',$('textarea[name="content"]').val());
+            formData.append('blog_type',$('select[name="blog_type"]').val());
+            // 上传
+            $.ajax({
+                url:"{% url 'update_post'%}",
+                type:'POST',
+                data:formData,
+                dataType:"json",
+                cache:false,
+                contentType: false,  
+                processData: false,
+                success:function(data){
+                    console.log(data);
+                    if(data['status'=='SUCCESS']){
+
+                        location.replace(location.href);
+                    }else{
+                        $("#post_error").text('发送失败请重新尝试');
+                    }
+                },
+                error:function(xhr){
+                    console.log(xhr);
+                }
+            });
+        });
+        
+
+        // 图片修正方法
+        function ReSizePic(ThisPic) {
+            var RePicWidth = 200; //想显示的宽度值
+         
+            var TrueWidth = ThisPic.width; //图片实际宽度
+            var TrueHeight = ThisPic.height; //图片实际高度
+         
+            if(TrueWidth>TrueHeight){
+                //宽大于高
+                var reWidth = RePicWidth;
+                ThisPic.width = reWidth;
+                //垂直居中
+                var nowHeight = TrueHeight * (reWidth/TrueWidth);
+                return nowHeight;  //将图片修改后的高度返回，供垂直居中用
+            }else{
+                //宽小于高
+                var reHeight = RePicWidth;
+                ThisPic.height = reHeight;
+            }
+        }
+    </script>
+{% endblock %}
+

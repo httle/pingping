@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}乒乒乓乓{% endblock %}
+{% block nav_sportsnews_active %}active{% endblock %}
+{% load staticfiles %}
+{% load comment_tags %}
+{% load likes_tags %}
+{% block head_extra %}
+    <link rel="stylesheet" type="text/css" href="{% static 'instructor.css' %}">
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+{% endblock %}
+    <!-- 页面内容 -->
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-xs-offset-1">
+                <h3>{{news.title}}</h3>
+                <ul>
+                    <li>时间:{{news.time}}</li>
+                </ul>
+                <img src="{{news.img}}" alt="{{news.img_describe}}">
+                <div>
+                    {{news.content|safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

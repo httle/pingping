@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}乒乒乓乓{% endblock %}
+{% block nav_sportsnews_active %}active{% endblock %}
+{% load staticfiles %}
+{% load comment_tags %}
+{% load likes_tags %}
+{% block head_extra %}
+    <link rel="stylesheet" type="text/css" href="{% static 'instructor.css' %}">
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'news.css' %}">
+{% endblock %}
+    <!-- 页面内容 -->
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">乒乓新闻</div>
+                    <div class="panel-body">
+                        {% for news in news_list %}
+                            <div class="instructor">
+                                <a href="{% url 'detailNews' news.pk %}">
+                                    <h3>{{ news.title }}</h3>
+                                    <p>{{news.time}}</p>
+                                </a>
+                            </div>
+                        {% empty %}
+                            <div class="instructor">
+                                <h3>--暂无新闻，敬请期待--</h3>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+                <div class="paginator">
+                  <ul class="pagination">
+                    <li>{# 页面跳转上一页 #}
+                        {% if news_list.has_previous %}
+                            <a href="?page={{news_list.previous_page_number}}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        {% else %}
+                            <span aria-hidden="true">&laquo;</span>
+                        {% endif %}
+                    </li>{# 全部页面 #}
+                    {% for page_num in page_range %}
+                        {% if page_num == news_list.number %}
+                            <li class="active"><span>{{page_num}}</span></li>
+                        {% else %}
+                            {% if page_num == '...' %}
+                                <li ><span>{{page_num}}</span></li>
+                            {% else %}
+                                <li><a href="?page={{page_num}}">{{page_num}}</a></li>
+                            {% endif %}
+                        {% endif %}
+
+                    {% endfor %}
+                    <li>{# 页面跳转下一页 #}
+                        {% if news_list.has_next %}
+                            <a href="?page={{news_list.next_page_number}}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        {% else %}
+                            <span aria-hidden="true">&raquo;</span>
+                        {% endif %}
+                    </li>
+                  </ul>
+                  <p>
+                      当前是{{news_list.number}}页,一共有{{news_list.paginator.num_pages}}页
+                  </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
