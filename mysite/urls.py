@@ -38,4 +38,4 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL , document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.BLOGIMG_URL, document_root = settings.BLOGIMG_ROOT)
+# urlpatterns += static(settings.BLOGIMG_URL, document_root = settings.BLOGIMG_ROOT)
