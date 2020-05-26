@@ -60,7 +60,7 @@ def blog2json(blog):
     imgs = BlogImage.objects.filter(blog = blog)
     imglist = []
     for img in imgs:
-        imglist.append(str(img.img.url))
+        imglist.append("http://47.93.251.168:8000"+str(img.img.url))
     return{
         'blogNum':blog.pk,
         'title':blog.title,
