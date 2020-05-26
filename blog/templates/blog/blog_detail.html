@@ -79,7 +79,7 @@
                 <div class="float container">
                     {% for img in imgs %}
                         <div class="logoImg amplifyImg">
-                            <img src="/media/{{img.img}}" alt="">
+                            <img src="{{ img.img.url }}" alt="">
                         </div>
                     {% endfor %}
                 </div>
