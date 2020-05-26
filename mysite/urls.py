@@ -34,6 +34,7 @@ urlpatterns = [
     path('instructor_list/',include('instructor.urls')),
     path('sportsnews/',include('sportsnews.urls')),
     path('appcontrol/',include('machine_control.urls')),
+    path(r'media/(?P<path>.*)',serve,{'document_root':settings.MEDIA_ROOT}),
 
 ]
 
