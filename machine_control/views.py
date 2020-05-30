@@ -4,6 +4,7 @@ from django.shortcuts import render
 # from .my_socket_web import socket_web
 import socket
 import time
+from multiprocessing import Process
 # Create your views here.
 def appControl(request):
     statue = 1
@@ -29,8 +30,23 @@ def appControl(request):
         }
     }
     data_json = json.dumps(data)
+    p = Process(target = socket_web,args=(data_json,))
+    p.start()
     # socket_web(data_json)
     # socket_data(data_json)
+    # print(data)
+    if(ifup =='' or ifmid=='' or ifbo=='' or
+            upSpeed=='' or midSpeed=='' or boSpeed==''):
+        statue=0
+        text = "发送失败"
+        
+    return JsonResponse({"data":{
+        'statue':statue,
+        'text': text,
+    }},safe=False)
+
+
+def socket_web(data_json):
     HOST = '172.29.52.94'
     PORT = 7000
     my_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -47,13 +63,3 @@ def appControl(request):
         if msg == "end":
             break
     conn.close()
-    # print(data)
-    if(ifup =='' or ifmid=='' or ifbo=='' or
-            upSpeed=='' or midSpeed=='' or boSpeed==''):
-        statue=0
-        text = "发送失败"
-        
-    return JsonResponse({"data":{
-        'statue':statue,
-        'text': text,
-    }},safe=False)
