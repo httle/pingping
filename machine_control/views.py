@@ -36,13 +36,14 @@ def appControl(request):
     my_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
     my_socket.bind((HOST,PORT))
-    my_socket.listen(5)
+    my_socket.listen(1)
     conn,addr = my_socket.accept()
     conn.send(data_json.encode())
     while True:
-        time.sleep(0.4)
+        time.sleep(2)
         rec = conn.recv(1024)
         msg = rec.decode()
+        print(msg)
         if msg == "end":
             break
     conn.close()
