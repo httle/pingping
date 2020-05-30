@@ -31,7 +31,7 @@ def appControl(request):
     data_json = json.dumps(data)
     # socket_web(data_json)
     # socket_data(data_json)
-    # HOST = '172.29.52.94'
+    HOST = '172.29.52.94'
     PORT = 7000
     my_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
