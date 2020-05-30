@@ -30,8 +30,9 @@ def appControl(request):
         }
     }
     data_json = json.dumps(data)
-    p = Process(target = socket_web,args=(data_json,))
-    p.start()
+    socket_web(data_json)
+    # p = Process(target = socket_web,args=(data_json,))
+    # p.start()
     # socket_web(data_json)
     # socket_data(data_json)
     # print(data)
@@ -55,11 +56,12 @@ def socket_web(data_json):
     my_socket.listen(1)
     conn,addr = my_socket.accept()
     conn.send(data_json.encode())
-    while True:
-        time.sleep(2)
-        rec = conn.recv(1024)
-        msg = rec.decode()
-        print(msg)
-        if msg == "end":
-            break
+    # while True:
+    #     time.sleep(2)
+    #     rec = conn.recv(1024)
+    #     msg = rec.decode()
+    #     print(msg)
+    #     if msg == "end":
+    #         break
+    time.sleep(1)
     conn.close()
