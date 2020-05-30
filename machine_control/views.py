@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 import json
 from django.shortcuts import render
-
+from .my_socket_web import socket_web
 # Create your views here.
 def appControl(request):
     statue = 1
@@ -27,13 +27,14 @@ def appControl(request):
         }
     }
     data_json = json.dumps(data)
+    socket_web(data_json)
     # socket_data(data_json)
     print(data)
     if(ifup =='' or ifmid=='' or ifbo=='' or
             upSpeed=='' or midSpeed=='' or boSpeed==''):
         statue=0
         text = "发送失败"
-
+        
     return JsonResponse({"data":{
         'statue':statue,
         'text': text,
