@@ -30,12 +30,11 @@ def appControl(request):
         }
     }
     data_json = json.dumps(data)
-    socket_web(data_json)
-    # p = Process(target = socket_web,args=(data_json,))
-    # p.start()
-    # socket_web(data_json)
-    # socket_data(data_json)
-    # print(data)
+    try:
+        socket_web(data_json)
+    except Exception as e:
+        pass
+        
     if(ifup =='' or ifmid=='' or ifbo=='' or
             upSpeed=='' or midSpeed=='' or boSpeed==''):
         statue=0
