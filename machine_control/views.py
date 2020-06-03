@@ -52,22 +52,22 @@ def socket_web(data_json):
     PORT = 7000
     my_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
-    # mysocket.settimeout(7)
-    my_socket.bind((HOST,PORT))
-    my_socket.listen(1)
-    conn,addr = my_socket.accept()
-    conn.send(data_json.encode())
-    time.sleep(3)
-    conn.close()
-    # try:
-    #     my_socket.bind((HOST,PORT))
-    #     my_socket.listen(1)
-    #     conn,addr = my_socket.accept()
-    #     conn.send(data_json.encode())
-    #     time.sleep(3)
-    #     conn.close()
-    # except Exception as e:
-    #     print(e)
+    # my_socket.bind((HOST,PORT))
+    # my_socket.listen(1)
+    # conn,addr = my_socket.accept()
+    # conn.send(data_json.encode())
+    # time.sleep(3)
+    # conn.close()
+    try:
+        mysocket.settimeout(7)
+        my_socket.bind((HOST,PORT))
+        my_socket.listen(1)
+        conn,addr = my_socket.accept()
+        conn.send(data_json.encode())
+        time.sleep(3)
+        conn.close()
+    except Exception as e:
+        print(e)
     print("end")
 
 def test(request):
