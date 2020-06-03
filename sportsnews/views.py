@@ -49,7 +49,7 @@ def news2json(news):
         'content': news.content,
     }
 
-def getnews(requests):
+def getnews(request):
     # 获取新闻的爬虫
     onepageurl = 'http://sports.sina.com.cn/others/pingpang.shtml'
     data = urllib.request.urlopen(onepageurl).read().decode("utf-8", "ignore")

@@ -5,6 +5,8 @@ from django.shortcuts import render
 import socket
 import time
 from multiprocessing import Process
+from django.contrib.auth.models import User
+from .models import Practice,PracticeImg
 # Create your views here.
 def appControl(request):
     statue = 1
@@ -79,3 +81,38 @@ def test(request):
         'statue':0,
         'text': "出错",
     }},safe=False)
+
+def uploadPracData(request):
+    statue = 1
+    user_name = request.POST.get('user','')
+    prac_num = request.POST.get('practice_num',-1)
+    hit_percent = request.POST.get('hit_percent',0.0)
+    prac_imgs = request.FILES.getlist('img',None)
+    print(user_name)
+    print(prac_num)
+    print(prac_imgs)
+    user = User.objects.get(usrname = user_name)
+    if(user and prac_num!=-1):
+        practice = Practice()
+        practice.user = user
+        practice.practice_num = prac_num
+        practice.hit_percent = hit_percent
+        practice.save()
+        if(prac_imgs):
+            for f in prac_imgs:
+                prac_img = PracticeImg()
+                prac_img.practice = practice
+                prac_img.img = f
+                prac_img.save()
+
+    else:
+        statue = 0
+        return JsonResponse({"data":{
+            'statue':statue,
+            'text':"failed"
+        }},safe=False)
+
+    return JsonResponse({"data":{
+            'statue':statue,
+            'text':"success"
+        }},safe=False)
