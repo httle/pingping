@@ -91,7 +91,7 @@ def uploadPracData(request):
     print(user_name)
     print(prac_num)
     print(prac_imgs)
-    user = User.objects.get(usrname = user_name)
+    user = User.objects.get(username = user_name)
     if(user and prac_num!=-1):
         practice = Practice()
         practice.user = user

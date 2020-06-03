@@ -12,6 +12,6 @@ class Practice(models.Model):
 		return '<practice:%s>' % self.user
 
 class PracticeImg(models.Model):
-	practice = models.ForeignKey(Practice, on_delete = models.CASCADE)
-	img = models.ImageField(upload_to = 'practiceImg')
+	practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
+	img = models.ImageField(upload_to='practiceImg')
 	
