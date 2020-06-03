@@ -102,6 +102,11 @@ def getnews(requests):
             except Exception as e:
                 print(e)
     print(addnum)
+    return JsonResponse({"data": {
+        'statue': 1,
+        'text': "success",
+        'num':addnum,
+    }}, safe=False)
 
 def detailNews(request,news_pk):
     # pk = request.GET.get('pk','')
