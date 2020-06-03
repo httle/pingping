@@ -5,5 +5,5 @@ urlpatterns=[
     path('',views.sportsNewsList,name='sportsNewsList'),
     path('<int:news_pk>',views.detailNews,name='detailNews'),
     path('appsportsnews',views.appSportsNews),
-
+    path('getnews',views.getnews),
 ]
