@@ -11,24 +11,38 @@ from .models import Practice,PracticeImg
 def appControl(request):
     statue = 1
     text = "发送成功"
-    ifup = request.POST.get('ifup','')
-    upSpeed = request.POST.get('upSpeed','')
-    ifmid = request.POST.get('ifmid','')
-    midSpeed = request.POST.get('midSpeed','')
-    ifbo = request.POST.get('ifbo','')
-    boSpeed = request.POST.get('boSpeed','')
+    ifup = request.POST.get('ifup',0)
+    if(ifup==true):
+        ifup=1
+    else:
+        ifup=0
+    upSpeed = request.POST.get('upSpeed',0)
+    ifmid = request.POST.get('ifmid',0)
+    if(ifmid==true):
+        ifmid=1
+    else:
+        ifmid=0
+    midSpeed = request.POST.get('midSpeed',0)
+    ifbo = request.POST.get('ifbo',0)
+    if(ifbo==true):
+        ifbo=1
+    else:
+        ifbo=0
+    boSpeed = request.POST.get('boSpeed',0)
+    ifcon = request.POST.get('ifcon',0)
+    print(ifcon)
     print(ifup,upSpeed)
     print(ifmid,midSpeed)
     print(ifbo,boSpeed)
     data={
-        'mainControl':1,
+        'mainControl':ifcon,
         'data':{
             'ifup':ifup,
-            'upSpeed':upSpeed,
+            'upSpeed':int(upSpeed),
             'ifmid':ifmid,
-            'midSpeed':midSpeed,
+            'midSpeed':int(midSpeed),
             'ifbo':ifbo,
-            'boSpeed':boSpeed,
+            'boSpeed':int(boSpeed),
         }
     }
     data_json = json.dumps(data)
