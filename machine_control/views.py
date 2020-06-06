@@ -11,23 +11,11 @@ from .models import Practice,PracticeImg
 def appControl(request):
     statue = 1
     text = "发送成功"
-    ifup = request.POST.get('ifup',0)
-    if(ifup==true):
-        ifup=1
-    else:
-        ifup=0
+    ifup = request.POST.get('ifup',false)
     upSpeed = request.POST.get('upSpeed',0)
-    ifmid = request.POST.get('ifmid',0)
-    if(ifmid==true):
-        ifmid=1
-    else:
-        ifmid=0
+    ifmid = request.POST.get('ifmid',false)
     midSpeed = request.POST.get('midSpeed',0)
-    ifbo = request.POST.get('ifbo',0)
-    if(ifbo==true):
-        ifbo=1
-    else:
-        ifbo=0
+    ifbo = request.POST.get('ifbo',false)
     boSpeed = request.POST.get('boSpeed',0)
     ifcon = request.POST.get('ifcon',0)
     print(ifcon)
