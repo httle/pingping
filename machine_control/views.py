@@ -11,11 +11,11 @@ from .models import Practice,PracticeImg
 def appControl(request):
     statue = 1
     text = "发送成功"
-    ifup = request.POST.get('ifup',false)
+    ifup = request.POST.get('ifup',0)
     upSpeed = request.POST.get('upSpeed',0)
-    ifmid = request.POST.get('ifmid',false)
+    ifmid = request.POST.get('ifmid',0)
     midSpeed = request.POST.get('midSpeed',0)
-    ifbo = request.POST.get('ifbo',false)
+    ifbo = request.POST.get('ifbo',0)
     boSpeed = request.POST.get('boSpeed',0)
     ifcon = request.POST.get('ifcon',0)
     print(ifcon)
@@ -26,11 +26,11 @@ def appControl(request):
         'mainControl':ifcon,
         'data':{
             'ifup':ifup,
-            'upSpeed':int(upSpeed),
+            'upSpeed':upSpeed,
             'ifmid':ifmid,
-            'midSpeed':int(midSpeed),
+            'midSpeed':midSpeed,
             'ifbo':ifbo,
-            'boSpeed':int(boSpeed),
+            'boSpeed':boSpeed,
         }
     }
     data_json = json.dumps(data)
