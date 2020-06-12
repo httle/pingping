@@ -31,8 +31,8 @@ def app_notification_change(request):
     if(int(mode)==1):
         notifications = user.notifications.unread()
         for i in notifications:
-            # i.unread = False
-            # i.save()
+            i.unread = False
+            i.save()
             pass
         print("已读")
         return JsonResponse({"data":{
@@ -40,13 +40,25 @@ def app_notification_change(request):
         'text': '全部已读',
     }},safe=False)
     elif(int(mode)==2):
-        # notifications = user.notifications.read()
-        # notifications.delete()
+        notifications = user.notifications.read()
+        notifications.delete()
         print("已删")
         return JsonResponse({"data":{
         'statue':1,
         'text': '全部删除',
     }},safe=False)
+    elif(int(mode)==3):
+        pk = request.GET.get('object_id',-1)
+        pk = (int)(pk)
+        print(pk)
+        my_notification = get_object_or_404(Notification, pk=pk)
+        my_notification.unread = False
+        my_notification.save()
+        print("success")
+        return JsonResponse({"data": {
+            'statue': 1,
+            'text': '已阅',
+        }}, safe=False)
     else:
         return JsonResponse({"data":{
         'statue':0,
@@ -71,6 +83,7 @@ def message2json(message):
     print(message.action_object.pk)
     comment = Comment.objects.get(pk = message.action_object.pk)
     return{
+        'pk':message.pk,
         'actor':message.actor.username,
         'verb':message.verb,
         'description':message.description,
