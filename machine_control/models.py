@@ -7,7 +7,7 @@ class Practice(models.Model):
 	created_time = models.DateTimeField(auto_now_add = True)
 	practice_num = models.IntegerField(default = 0)
 	hit_percent = models.FloatField(default = 0.0)
-
+	data = models.TextField()
 	def __str__(self):
 		return '<practice:%s>' % self.user
 

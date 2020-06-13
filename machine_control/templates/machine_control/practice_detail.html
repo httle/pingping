@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}{{blog.title}}{% endblock %}
+<!-- {% block nav_blog_active %}active{% endblock %} -->
+
+{% load staticfiles %}
+<!-- 加载模板标签 -->
+{% load comment_tags %}
+{% load likes_tags %}
+
+
+{% block head_extra %}
+<link rel="stylesheet" type="text/css" href="{% static 'practice.css' %}">
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+<script src="http://cdn.highcharts.com.cn/highcharts/highcharts.js"></script>
+
+<style type="text/css">
+        .float{
+            /*width:600px;
+            margin-bottom:2cm;*/
+        }
+        .float img{
+            float:left;
+            width:200px;
+            height:200px;
+            
+        }
+        .ImgAmplify{
+            background-position: 0px 0px, 10px 10px;
+            background-size: 20px 20px;
+            background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%),linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);
+            cursor: zoom-in;
+        }
+
+</style>
+
+{% endblock %}
+
+{# 页面内容 #}
+{% block content %}
+<div class="col-xs-12 col-xs-of-1">
+    <div id="container" style="min-width:400px;height:400px"></div>
+    <div class="container">
+        {% for img in imgs %}
+            <div class="float">
+                    <img src="/media/{{img.img}}" alt="">
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block script_extends %}
+<script type="text/javascript">
+        Highcharts.chart('container', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: '击球结果'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    }
+                }
+            },
+            series: [{
+                name: 'Brands',
+                colorByPoint: true,
+                data: [{
+                    name: 'success',
+                    y: {{practice.hit_percent}},
+                    sliced: true,
+                    selected: true
+                }, {
+                    name: 'failure',
+                    y: 1-{{practice.hit_percent}}
+                }]
+            }]
+        });
+
+</script>
+{% endblock %}
