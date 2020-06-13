@@ -62,7 +62,7 @@ def pratice2json(practice):
     imgs = PracticeImg.objects.filter(practice = practice)
     imglist = []
     for img in imgs:
-        imglist.append('http://10.0.2.2:8000/media/'+str(img.img))
+        imglist.append("http://47.93.251.168:8000"+str(img.img))
     return{
         'praticeNum':practice.pk,
         'time':practice.created_time,
