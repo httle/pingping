@@ -58,6 +58,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="{% url 'user_info' %}">个人中心</a></li>
                                 <li><a href="{% url 'my_notifications' %}">我的消息<span class="badge unread-count live_notify_badge">{% if unread_count > 0 %}{{ unread_count }}{% endif %}</span></a></li>
+                                <li><a href="{% url 'practice_list' %}">我的训练</a></li>
                                 {% if user.is_staff or user.is_superuser %}
                                     <li><a href="{% url 'admin:index' %}">后台管理</a></li>
                                     <li><a href="{% url 'count' %}">访问统计</a></li>
