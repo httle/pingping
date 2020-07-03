@@ -18,12 +18,16 @@ def appControl(request):
     ifbo = request.POST.get('ifbo',0)
     boSpeed = request.POST.get('boSpeed',0)
     ifcon = request.POST.get('ifcon',0)
+    ifend = request.POST.get('ifend',1)
+    mode = request.POST.get('mode',0)
     print(ifcon)
     print(ifup,upSpeed)
     print(ifmid,midSpeed)
     print(ifbo,boSpeed)
     data={
+        'ifend':ifend,
         'mainControl':ifcon,
+        'mode':mode,
         'data':{
             'ifup':ifup,
             'upSpeed':upSpeed,
