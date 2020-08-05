@@ -28,7 +28,7 @@
                             </div>
                         {% empty %}
                             <div class="blog">
-                                <h3>--暂无训练，敬请期待--</h3>
+                                <h3>--暂无训练~--</h3>
                             </div>
                         {% endfor %}
                     </div>
@@ -36,9 +36,9 @@
                 <div class="paginator">
                   <ul class="pagination">
                     <li>{# 页面跳转上一页 #}
-                        {% if page_of_blogs.has_previous %}
+                        {% if page_of_practice.has_previous %}
                         <!-- 判断是否有上一页，有则左箭头可以跳转 -->
-                            <a href="?page={{page_of_blogs.previous_page_number}}" aria-label="Previous">
+                            <a href="?page={{page_of_practice.previous_page_number}}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         {% else %}
@@ -47,7 +47,7 @@
                     </li>{# 全部页面 #}
                     {% for page_num in page_range %}
                     <!-- 中间的页码 -->
-                        {% if page_num == page_of_blogs.number %}
+                        {% if page_num == page_of_practice.number %}
                         <!-- 若页码为当前页面则高亮 -->
                             <li class="active"><span>{{page_num}}</span></li>
                         {% else %}
@@ -62,9 +62,9 @@
 
                     {% endfor %}
                     <li>{# 页面跳转下一页 #}
-                        {% if page_of_blogs.has_next %}
+                        {% if page_of_practice.has_next %}
                         <!-- 判断是否有下一页，有则右箭头可以跳转 -->
-                            <a href="?page={{page_of_blogs.next_page_number}}" aria-label="Next">
+                            <a href="?page={{page_of_practice.next_page_number}}" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         {% else %}
@@ -73,7 +73,7 @@
                     </li>
                   </ul>
                   <p>
-                      当前是{{page_of_blogs.number}}页,一共有{{page_of_blogs.paginator.num_pages}}页
+                      当前是{{page_of_practice.number}}页,一共有{{page_of_practice.paginator.num_pages}}页
                   </p>
                 </div>
             </div>

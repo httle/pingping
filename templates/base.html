@@ -63,7 +63,7 @@
                                     <li><a href="{% url 'admin:index' %}">后台管理</a></li>
                                     <li><a href="{% url 'count' %}">访问统计</a></li>
                                 {% endif %}
-                                <li><a href="{% url 'logout' %}?from={{ request.get_full_path }}">退出</a></li>
+                                <li><a href="{% url 'logout' %}">退出</a></li>
                             </ul>
                         </li>
                     {% endif %}
