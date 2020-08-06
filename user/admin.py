@@ -15,6 +15,11 @@ class UserAdmin(BaseUserAdmin):
 		return obj.profile.nickname
 	nickname.short_description = '昵称'
 
+@admin.register(FriendsSystem)
+class FriendsSystemAdmin(admin.ModelAdmin):
+	list_display = ('id','user1','user2','agree')
+
+
 admin.site.unregister(User)
 admin.site.register(User,UserAdmin)
 
