@@ -3,14 +3,38 @@ from django.shortcuts import redirect,render,get_object_or_404
 from notifications.models import Notification
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from private_letter.models import PrivateLetter,Chat
 from comment.models import Comment
 import re
 
 
 
 def my_notifications(request):
+    a = Chat()
+    contentType = ContentType.objects.get_for_model(a)
+    notifications = Notification.objects.exclude(action_object_content_type = contentType).filter(recipient = request.user
+        ,unread=True)
     context={}
+    context["notifications"] = notifications
     return render(request, 'my_notifications/my_notifications.html',context)
+
+def mes_and_chatMes(request):
+    status = request.GET.get('status','')
+    # print(status)
+    a = Chat()
+    contentType = ContentType.objects.get_for_model(a)
+    chatNotifications = Notification.objects.filter(recipient = request.user,
+        action_object_content_type = contentType,unread=True).count()
+    notification = request.user.notifications.unread().count()
+    notify = notification-chatNotifications
+    # print(chatNotifications,notify)
+    return JsonResponse({
+        "statue":1,
+        "chatNotifications":chatNotifications,
+        "notification":notify,
+    })
+
 
 def my_notification(request,my_notification_pk):
     my_notification = get_object_or_404(Notification,pk=my_notification_pk)
@@ -19,9 +43,9 @@ def my_notification(request,my_notification_pk):
     return redirect(my_notification.data['url'])
 
 def my_notification_delete(request):
-	notifications = request.user.notifications.read()
-	notifications.delete()
-	return redirect(reverse('my_notifications'))
+    notifications = request.user.notifications.read()
+    notifications.delete()
+    return redirect(reverse('my_notifications'))
 
 def app_notification_change(request):
     user = request.GET.get('user', '')
@@ -80,7 +104,7 @@ def app_notification(request):
 
 def message2json(message):
     # 数据转化为json
-    print(message.action_object.pk)
+    # print(message.action_object.pk)
     comment = Comment.objects.get(pk = message.action_object.pk)
     return{
         'pk':message.pk,
@@ -104,3 +128,6 @@ def app_notification_new(request):
         "statue":1,
         "text":num,
     },safe=False)
+
+
+

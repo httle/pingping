@@ -3,6 +3,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'notifications/notify.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jquery-3.4.1.js'%}"></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,10 +15,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'base.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.7/css/bootstrap.min.css' %}">
     <!-- <script type="text/javascript" src="{% static 'jquery-1.12.4.min.js' %}"></script> -->
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-    <script type="text/javascript" src="{% static 'bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'notifications/notify.js' %}"></script>
-    <script type="text/javascript" src="{% static 'jquery-3.4.1.js'%}"></script>
+    
     {% block head_extra %}{% endblock %}
 </head>
 <body >
@@ -57,12 +58,14 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="{% url 'user_info' %}">个人中心</a></li>
-                                <li><a href="{% url 'my_notifications' %}">我的消息<span class="badge unread-count live_notify_badge">{% if unread_count > 0 %}{{ unread_count }}{% endif %}</span></a></li>
+                                <li><a href="{% url 'my_notifications' %}">我的消息<span class="badge unread-count live_notify_badge mes">{% if unread_count > 0 %}{{ unread_count }}{% endif %}</span></a></li>
+                                <li><a href="{% url 'privateLetter' %}" >私信<span class="badge unread-count live_notify_badge chatMes">{% if unread_count > 0 %}{{ unread_count }}{% endif %}</span></a></li>
                                 <li><a href="{% url 'practice_list' %}">我的训练</a></li>
                                 {% if user.is_staff or user.is_superuser %}
                                     <li><a href="{% url 'admin:index' %}">后台管理</a></li>
                                     <li><a href="{% url 'count' %}">访问统计</a></li>
                                 {% endif %}
+                                <!-- <li><a href="{% url 'logout' %}?from={{ request.get_full_path }}">退出</a></li> -->
                                 <li><a href="{% url 'logout' %}">退出</a></li>
                             </ul>
                         </li>
@@ -133,7 +136,40 @@
                 unread_count = '';
             }
             $('.live_notify_badge').text(unread_count);
+            
         }
+
+        var AlarmInfo = {
+            alarm_Timer:null,
+            refreshNotify:function(){
+                $.ajax({
+                    url:"{% url 'mes_and_chatMes'%}",
+                    type:'GET',
+                    data:{
+                        status:1
+                    },
+                    cache:false,
+                    success:function(data){
+                        console.log(data)
+                        unread_count = data['notification'];
+                        if (unread_count == 0) {
+                            unread_count = '';
+                        }
+                        $('.mes').text(unread_count);
+                        chat_unread_count = data['chatNotifications'];
+                        if (chat_unread_count == 0) {
+                            chat_unread_count = '';
+                        }
+                        $('.chatMes').text(chat_unread_count);
+                    },
+                    error:function(xhr){
+                        console.log(xhr)
+                    }
+                });
+            },
+        }
+        AlarmInfo.alarm_Timer = setInterval(AlarmInfo.refreshNotify,5000);
+
     </script>
     {% register_notify_callbacks callbacks='my_special_notification_callback' %}
     {% block script_extends %}{% endblock %}

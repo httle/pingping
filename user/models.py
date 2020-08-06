@@ -25,6 +25,12 @@ def get_nickname_or_username(self):
 def has_nickname(self):
 	return Profile.objects.filter(user=self).exists()
 
+class FriendsSystem(models.Model):
+	user1 = models.ForeignKey(User, on_delete=models.CASCADE,related_name="user1")
+	user2 = models.ForeignKey(User, on_delete=models.CASCADE,related_name="user2")
+
+	agree = models.SmallIntegerField(default = 0)
+
 User.get_nickname = get_nickname
 User.get_nickname_or_username = get_nickname_or_username
 User.has_nickname = has_nickname

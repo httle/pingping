@@ -8,4 +8,5 @@ urlpatterns = [
     path('app_notifications',views.app_notification),
     path('app_notifications_new',views.app_notification_new),
     path('app_notifications_change',views.app_notification_change),
+    path('mes_and_chatMes',views.mes_and_chatMes,name='mes_and_chatMes'),
 ]
