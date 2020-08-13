@@ -11,6 +11,10 @@ class Practice(models.Model):
 	def __str__(self):
 		return '<practice:%s>' % self.user
 
+	class Meta:
+        # 这是django的内嵌类
+        ordering=['-created_time']
+
 class PracticeImg(models.Model):
 	practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
 	img = models.ImageField(upload_to='practiceImg')
