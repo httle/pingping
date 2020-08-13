@@ -37,7 +37,7 @@ def practice_list(request):
     # 列表页
     user = request.user
     print(user.username)
-    practice_all_list = Practice.objects.filter(user = user).reverse()
+    practice_all_list = Practice.objects.filter(user = user)
     context = get_practice_list_common_data(request, practice_all_list)
     return render(request, 'machine_control/practice_list.html', context)
 
