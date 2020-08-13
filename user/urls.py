@@ -14,4 +14,7 @@ urlpatterns = [
     path('forgot_password/',views.forgot_password,name='forgot_password'),
     path('wxLogin/',views.wxLogin),
     path('wxRegister/',views.wxRegister),
+    path('makeFriend',view2.sendFriendNotify,name="make_friend"),
+    path('friendNotifyList',view2.friendNotifyList,name="friendNotifyList"),
+    path('friendProcess',view2.friendProcess,name="friendProcess"),
 ]
