@@ -54,7 +54,7 @@
     <div class="body">
         <div class="all-list">
             <div class="list-header">
-                <span class="glyphicon glyphicon-envelope" onclick="test()">私信消息</span>
+                <span class="glyphicon glyphicon-envelope" >私信消息</span>
             </div>
             <div class="select-icon">
                 <div class="chat_icon bottom_hr">
@@ -104,7 +104,8 @@
         <div class="chat">
             <div class="chat-main">
             </div>
-            {% if iffromWeb == 1 %}
+            <div class="chatid" id=""></div>
+            <!-- {% if iffromWeb == 1 %}
                 <div class="chatid" id="{{selectedpk}}">
                     {% for privateLetter in privateLetters %}
                         {% if user == privateLetter.sender %}
@@ -117,7 +118,7 @@
                 </div>
             {% else %}
                 <div class="chatid" id=""></div>
-            {% endif %}
+            {% endif %} -->
             <div class="chat-send">
                 <!-- <form id="post_chat" action="{% url 'sendChatMes'%}" method="POST" style="overflow: hidden;" ENCTYPE="multipart/form-data">
                     {% csrf_token %}
