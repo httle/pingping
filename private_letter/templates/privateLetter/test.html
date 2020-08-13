@@ -103,21 +103,21 @@
         </div>
         <div class="chat">
             <div class="chat-main">
+                {% if iffromWeb == 1 %}
+                    <div class="chatid" id="{{selectedpk}}">
+                        {% for privateLetter in privateLetters %}
+                            {% if user == privateLetter.sender %}
+                                <div class="message_right" align="right">{{privateLetter.text}}</div>
+                            {% else %}
+                                <div class="message_left" align="left">{{privateLetter.text}}</div>
+                            {% endif %}
+                        {% empty %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="chatid" id=""></div>
+                {% endif %}
             </div>
-            {% if iffromWeb == 1 %}
-                <div class="chatid" id="{{selectedpk}}">
-                    {% for privateLetter in privateLetters %}
-                        {% if user == privateLetter.sender %}
-                            <div class="message_right" align="right">{{privateLetter.text}}</div>
-                        {% else %}
-                            <div class="message_left" align="left">{{privateLetter.text}}</div>
-                        {% endif %}
-                    {% empty %}
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="chatid" id=""></div>
-            {% endif %}
             <div class="chat-send">
                 <!-- <form id="post_chat" action="{% url 'sendChatMes'%}" method="POST" style="overflow: hidden;" ENCTYPE="multipart/form-data">
                     {% csrf_token %}
