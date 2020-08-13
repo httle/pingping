@@ -370,6 +370,30 @@
             }, 500);
         }
 
+        function makeFriend(obj,friend_pk){
+            $.ajax({
+                url:"{% url 'make_friend' %}",
+                type:'GET',
+                data:{
+                    id:friend_pk,
+                },
+                cache:false,
+                success:function(data){
+                    console.log(data);
+                    if(data["ifsuccess"]==1){
+                        alert("发送成功！");
+                    }
+                    if(data["ifsend"]==1){
+                        alert("已经发送好友请求，请耐心等待回复");
+                    }
+                },
+                error:function(xhr){
+                    console.log(xhr);
+
+                }
+            })
+        };
+        
         $(document).ready(function () {
                 var imgsObj = $('.amplifyImg img');//需要放大的图像
                 if(imgsObj){
