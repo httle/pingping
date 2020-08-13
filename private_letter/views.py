@@ -55,7 +55,7 @@ def privateLetter(request):
 		# print(notification.count())
 	# for i in friends:
 	# 	print(i.user1.username)
-	return render(request, 'privateLetter/test.html',context)
+	return render(request, 'privateLetter/test2.html',context)
 
 def chatMessage(request):
 	chatid = request.GET.get('id')

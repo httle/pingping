@@ -47,7 +47,107 @@
     <!-- 页面内容 -->
 
 {% block content %}
-<div>CNM</div>
+<div class="container">
+    <div class="header">
+        <span id="hello_text"></span>
+    </div>
+    <div class="body">
+        <div class="all-list">
+            <div class="list-header">
+                <span class="glyphicon glyphicon-envelope" >私信消息</span>
+            </div>
+            <div class="select-icon">
+                <div class="chat_icon bottom_hr">
+                    <span class="glyphicon glyphicon-comment"></span>
+                </div>
+                <div style="border: 1px solid #000;"></div>
+                <div class="friend_icon">
+                    <span class="glyphicon glyphicon-user"></span>
+                </div>
+            </div>
+            <div class="frineds-list op" >
+                {% for friend in friends %} 
+                    {% if user == friend.user1 %}
+                        <div class="friend" onclick="startChat({{ friend.user2.pk }})">{{ friend.user2 }}</div>
+                    {% else %}
+                        <div class="friend" onclick="startChat({{ friend.user1.pk }})">{{ friend.user1 }}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="chats-list" >
+                <div class="friendnotify" onclick="friendNotifyList()"><span class="glyphicon glyphicon-volume-up"></span></div>
+                {% for chat in chats %} 
+                    {% if user == chat.user1 %}
+                        {% if iffromWeb == 1 %}
+                            {% if chat.pk == selectedpk %}
+                                <div class="chat_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                            {% else %}
+                                <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                            {% endif %}
+                        {% else %}
+                            <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                        {% endif %}
+                    {% else %}
+                        {% if iffromWeb == 1 %}
+                            {% if chat.pk == selectedpk %}
+                                <div class="chat_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                            {% else %}
+                                <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                            {% endif %}
+                        {% else %}
+                            <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="chat">
+            <div class="chat-main">
+            </div>
+            <div class="chatid" id=""></div>
+            <!-- {% if iffromWeb == 1 %}
+                <div class="chatid" id="{{selectedpk}}">
+                    {% for privateLetter in privateLetters %}
+                        {% if user == privateLetter.sender %}
+                            <div class="message_right" align="right">{{privateLetter.text}}</div>
+                        {% else %}
+                            <div class="message_left" align="left">{{privateLetter.text}}</div>
+                        {% endif %}
+                    {% empty %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="chatid" id=""></div>
+            {% endif %} -->
+            <div class="chat-send">
+                <!-- <form id="post_chat" action="{% url 'sendChatMes'%}" method="POST" style="overflow: hidden;" ENCTYPE="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="postChat">
+                        <div class="chatid" id=""></div>
+                        <div class="form-group">
+                            <textarea id="post_text" name="content" class="form-control" placeholder="在这里输入你想说的话吧~" rows="5" ></textarea>
+                            <span id="post_error" class="text-danger pull-left"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="submit" value="私信" class="btn btn-primary pull-right">
+                    </div>
+                </form> -->
+                <div class="postChat">
+                    <div class="form-group">
+                        <textarea id="post_text" name="content" class="form-control" placeholder="在这里输入你想说的话吧~" rows="5" ></textarea>
+                        <span id="post_error" class="text-danger pull-left"></span>
+                    </div>
+                </div>
+                <div>
+                    <!-- <div id="user" style="display: none;"></div> -->
+                    <textarea id="user" style="display: none;">{{user.username}}</textarea>
+                    <button  value="私信" class="btn btn-primary pull-right submit" onclick="sendChatMes()">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block script_extends %}
