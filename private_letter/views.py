@@ -15,30 +15,30 @@ from .models import Chat,PrivateLetter
 
 def privateLetter(request):
 	context = {}
-	mode = request.GET.get("mode",'0')
-	print("mode="+mode)
+	# mode = request.GET.get("mode",'0')
+	# print("mode="+mode)
 	context["iffromWeb"] = 0
-	if(str(mode) == '1'):
-		print("inter")
-		context["iffromWeb"] = 1
-		chater = request.GET.get("chater","")
-		chater = User.objects.get(username = chater)
-		ifchat = Chat.objects.filter(Q(user1 = request.user) | Q(user2 = request.user)).filter(Q(user1 = chater) | Q(user2 = chater))
-		if(ifchat):
-			privateLetters = PrivateLetter.objects.filter(chat = ifchat[0])
-			context["privateLetters"] = privateLetters
-			context["selectedpk"] = ifchat[0].pk
-			print("havechat")
-		else:
-			toChater = Chat()
-			toChater.user1 = request.user
-			toChater.user2 = chater
-			toChater.unread = 0
-			toChater.save()
-			context["selectedpk"] = toChater.pk
-			print("nothaveChat")
-	else:
-		print("notenter")
+	# if(str(mode) == '1'):
+	# 	print("inter")
+	# 	context["iffromWeb"] = 1
+	# 	chater = request.GET.get("chater","")
+	# 	chater = User.objects.get(username = chater)
+	# 	ifchat = Chat.objects.filter(Q(user1 = request.user) | Q(user2 = request.user)).filter(Q(user1 = chater) | Q(user2 = chater))
+	# 	if(ifchat):
+	# 		privateLetters = PrivateLetter.objects.filter(chat = ifchat[0])
+	# 		context["privateLetters"] = privateLetters
+	# 		context["selectedpk"] = ifchat[0].pk
+	# 		print("havechat")
+	# 	else:
+	# 		toChater = Chat()
+	# 		toChater.user1 = request.user
+	# 		toChater.user2 = chater
+	# 		toChater.unread = 0
+	# 		toChater.save()
+	# 		context["selectedpk"] = toChater.pk
+	# 		print("nothaveChat")
+	# else:
+	# 	print("notenter")
 
 
 
