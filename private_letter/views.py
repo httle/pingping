@@ -135,7 +135,7 @@ def appchat2json(chat,user):
 		'pk':chat.pk,
 		'user1':chat.user1.username if chat.user2==user else chat.user2.username,
 		'user2':chat.user2.username,
-		'unread':chat.unreadNum,
+		'unread':chat.unread,
 	}
 
 def appChatList(request):
