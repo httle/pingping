@@ -7,7 +7,7 @@ class Chat(models.Model):
 	user1 = models.ForeignKey(User, on_delete=models.CASCADE,related_name="chat_user1")
 	user2 = models.ForeignKey(User, on_delete =models.CASCADE,related_name="chat_user2")
 
-	unreadNum = models.IntegerField(default = 0)
+	unread = models.IntegerField(default = 0)
 	def __str__(self):
 		return '%s and %s'% (self.user1.username,self.user2.username)
 class PrivateLetter(models.Model):
