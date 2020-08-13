@@ -20,11 +20,13 @@ def appControl(request):
     ifcon = request.POST.get('ifcon',0)
     ifend = request.POST.get('ifend',1)
     mode = request.POST.get('mode',0)
+    sendpractice = request.POST.get('sendpractice',0)
     print(ifcon)
     print(ifup,upSpeed)
     print(ifmid,midSpeed)
     print(ifbo,boSpeed)
     data={
+        'sendpractice':sendpractice,
         'ifend':ifend,
         'mainControl':ifcon,
         'mode':mode,
