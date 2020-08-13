@@ -387,7 +387,7 @@
 
                                 //获取图片原始宽度、高度
                                 var orignImg = new Image();
-                                orignImg.src ="http://127.0.0.1:8000/media/"+currImg.attr("src").slice(7) ;
+                                orignImg.src ="http://"+currImg.attr("src").slice(7) ;
                                 console.log(orignImg.src);
                                 var currImgWidth= orignImg.width;
                                 var currImgHeight = orignImg.height;
