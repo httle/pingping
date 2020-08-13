@@ -17,7 +17,7 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(FriendsSystem)
 class FriendsSystemAdmin(admin.ModelAdmin):
-	list_display = ('id','user1','user2','agree')
+	list_display = ('id','user1','user2','agreesender','agreereceiver','agree','ifprocess')
 
 
 admin.site.unregister(User)

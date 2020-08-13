@@ -194,3 +194,26 @@ body {
     width: 900px;
     overflow:auto;
 }
+
+.friendnotify{
+    font-size: 20px;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    border-bottom: 2px solid #000;
+    display: inline-block;
+}
+
+.friend_notify_list{
+    margin-right:auto;
+    word-wrap:break-word;
+    display: block;
+    width: 90%;
+    padding: 10px;
+    border: 2px solid #000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    margin-left: 10px;
+}

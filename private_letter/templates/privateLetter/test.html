@@ -5,13 +5,43 @@
 <!-- 加载模板标签 -->
 {% load comment_tags %}
 {% load likes_tags %}
+
 {% block head_extra %}
     <link rel="stylesheet" type="text/css" href="{% static 'privateletter.css' %}">
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
     <script type="text/javascript" src="{% static 'privateletter.js' %}"></script>
     <style type="text/css">
-        
+    .message_left{
+        width: fit-content;
+        max-width: 400px;
+        margin-right:auto;
+        word-wrap:break-word;
+        display: block;
+        text-align: left;
+        padding: 10px;
+        border: 2px solid #000;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        margin-left: 10px;
+    }
+    .message_right{
+        width: fit-content;
+        max-width: 400px;
+        /*position: fixed;
+        right: 0;*/
+        margin-left: auto;
+        word-wrap:break-word;
+        display:block;
+        text-align: left;
+        padding: 10px;
+        border: 2px solid #000;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        margin-right: 10px;
+    }
     </style>
 {% endblock %}
     <!-- 页面内容 -->
@@ -38,24 +68,56 @@
             <div class="frineds-list op" >
                 {% for friend in friends %} 
                     {% if user == friend.user1 %}
-                        <div class="friend" >{{ friend.user2 }}</div>
+                        <div class="friend" onclick="startChat({{ friend.user2.pk }})">{{ friend.user2 }}</div>
                     {% else %}
-                        <div class="friend">{{ friend.user1 }}</div>
+                        <div class="friend" onclick="startChat({{ friend.user1.pk }})">{{ friend.user1 }}</div>
                     {% endif %}
                 {% endfor %}
             </div>
             <div class="chats-list" >
+                <div class="friendnotify" onclick="friendNotifyList()"><span class="glyphicon glyphicon-volume-up"></span></div>
                 {% for chat in chats %} 
                     {% if user == chat.user1 %}
-                        <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                        {% if iffromWeb == 1 %}
+                            {% if chat.pk == selectedpk %}
+                                <div class="chat_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                            {% else %}
+                                <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                            {% endif %}
+                        {% else %}
+                            <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                        {% endif %}
                     {% else %}
-                        <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})">{{ chat.user1 }}{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                        {% if iffromWeb == 1 %}
+                            {% if chat.pk == selectedpk %}
+                                <div class="chat_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                            {% else %}
+                                <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                            {% endif %}
+                        {% else %}
+                            <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </div>
         </div>
         <div class="chat">
-            <div class="chat-main"></div>
+            <div class="chat-main">
+            </div>
+            {% if iffromWeb == 1 %}
+                <div class="chatid" id="{{selectedpk}}">
+                    {% for privateLetter in privateLetters %}
+                        {% if user == privateLetter.sender %}
+                            <div class="message_right" align="right">{{privateLetter.text}}</div>
+                        {% else %}
+                            <div class="message_left" align="left">{{privateLetter.text}}</div>
+                        {% endif %}
+                    {% empty %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="chatid" id=""></div>
+            {% endif %}
             <div class="chat-send">
                 <!-- <form id="post_chat" action="{% url 'sendChatMes'%}" method="POST" style="overflow: hidden;" ENCTYPE="multipart/form-data">
                     {% csrf_token %}
@@ -71,7 +133,6 @@
                     </div>
                 </form> -->
                 <div class="postChat">
-                    <div class="chatid" id=""></div>
                     <div class="form-group">
                         <textarea id="post_text" name="content" class="form-control" placeholder="在这里输入你想说的话吧~" rows="5" ></textarea>
                         <span id="post_error" class="text-danger pull-left"></span>
@@ -94,6 +155,92 @@
         alert("NMD");
     }
 
+    function friendNotifyList(){
+        $.ajax({
+            url:"{% url 'friendNotifyList' %}",
+            type:'GET',
+            data:{},
+            cache:false,
+            success:function(data){
+                console.log(data)
+                $(".chat-main").empty();
+                for(var i=0;i<data["data"].length;i++){
+                    var message_html = '<div class="friend_notify_list" ><div class="pull-left">'+data["data"][i]["sender"]+'申请加你为好友</div><button class="pull-right agree" onclick="friendProcess(this,1,+'+data["data"][i]["pk"]+')">同意</button><button class="pull-right reject" onclick="friendProcess(this,0,'+data["data"][i]["pk"]+')">拒绝</button></div>';
+                    // console.log(message_html);
+                    $(".chat-main").append(message_html);
+                };
+                $(".chat-main").scrollTop($(".chat-main").height());
+            },
+            error:function(xhr){
+
+            },
+        })
+    }
+
+    function friendProcess(obj,mode,pk){
+        console.log(pk);
+        $.ajax({
+            url:"{% url 'friendProcess' %}",
+            type:"GET",
+            cache:false,
+            data:{
+                mode:mode,
+                id:pk,
+            },
+            success:function(data){
+                console.log(data);
+                var container = $(obj).parents(".friend_notify_list");
+                container.remove();
+                if(mode==1){
+                    var html_friend = '<div class="friend" >'+data["friend"]+'</div>';
+                    $(".frineds-list").append(html_friend);
+                }
+            },
+            error:function(xhr){
+                console.log(xhr);
+            }
+        })
+    }
+
+    function startChat(chatobjid){
+        $.ajax({
+            url:"{% url 'startChat' %}",
+            type:'GET',
+            cache:false,
+            data:{
+                chatobjid:chatobjid,
+            },
+            success:function(data){
+                console.log(data);
+                if(data["status"]==1){
+                    if(data["ifhave"]==1){
+                        $(".friend_icon").removeClass("bottom_hr");
+                        $(".chat_icon").addClass("bottom_hr");
+                        $(".frineds-list").addClass("op");
+                        $(".chats-list").removeClass("op");
+                        $(".chat-main").empty();
+                        // id = "#"+data["id"];
+                        $("div[name='"+data["id"]+"']").attr("class","chat_selected");
+                        for(var i=0;i<data["data"].length;i++){
+                            if(data["data"][i]["ifsender"]==1){
+                                var message_html = '<div class="message_right" align="right">'+data["data"][i]["text"]+'</div>';
+                            }else{
+                                var message_html = '<div class="message_left" align="left">'+data["data"][i]["text"]+'</div>';
+                            }
+                            
+                            console.log(message_html);
+                            $(".chat-main").append(message_html);
+                        };
+                    }else{
+                        
+                    }
+                }
+            },
+            error:function(xhr){
+                console.log(xhr);
+            }
+        })
+    }
 
     function getChatMes(object,id){
         // alert("NMD");
@@ -139,7 +286,8 @@
         var name = $("#user").val();
         console.log(name);
         var formData = new FormData();
-        var id = $(".chatid").attr("id");
+        id = $(".chatid").attr("id");
+        // console.log($(".chatid").id);
         $("#post_error").text('');
         if($('#post_text').val().trim()==''){
             $("#post_error").text("内容不能为空");
@@ -176,8 +324,43 @@
         });
     };
 
+    var mesChange = {
+        alarm_Timer:null,
+        mesNotify:function(){
+            var id = $(".chatid").attr("id");
+            $.ajax({
+                url:"{% url 'webNotify' %}",
+                type:'GET',
+                data:{
+                    id:id,
+                },
+                cache:false,
+                success:function(data){
+                    console.log(data)
+                    for(var i=0;i<data["text"].length;i++){
+                        var message_html = '<div class="message_left" align="left">'+data["text"][i]["text"]+'</div>';
+                        $(".chat-main").append(message_html);
+                    };
+                    $(".chat-main").scrollTop($(".chat-main").height());
+                    for(var i=0;i<data["data"].length;i++){
+                        if(data["data"][i]["unreadnum"]!=0){
+                            chatid = "#"+data["data"][i]["pk"];
+                            $(chatid).text(data["data"][i]["unreadnum"]);
+                        }
+                    };
+                },
+                error:function(xhr){
+                    console.log(xhr)
+                }
+            });
+        },
+    };
+    mesChange.alarm_Timer = setInterval(mesChange.mesNotify,5000);
+
     $(document).ready(function(){
             $(".friend_icon").click(function(){
+                $(".chat-main").empty();
+                $(".chat_selected").attr("class","chat_not_selected");
                 $(".chat_icon").removeClass("bottom_hr");
                 $(this).addClass("bottom_hr");
                 $(".frineds-list").removeClass("op");
@@ -194,203 +377,5 @@
         });
 </script>
 
-<style type="text/css">
-    /** { margin: 0; padding: 0; }*/
-    body {
-        background: #d2d2d2;
-    }
-    .container {
-        /*自身的样式*/
-        width: 1170px;
-        min-width: 500px;
-        margin: 5vh auto 0;
-        box-shadow: #b9b9b9 0 0 6px 4px;
-        background-color: white;
-        border-radius: 6px;
-        overflow: hidden;
-        /*内部元素的布局*/
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 20px;
-    }
-    .header {
-        padding: 6px 0;
-        text-align: center;
-    }
-    .body {
-        /*自身样式*/
-        height: 86vh;
-        border-top: 1px solid #aaa;
-        /*内部元素的布局方式*/
-        display: flex;
-    }
-    .body .all-list {
-        border-right: 1px solid #aaa;
-        background: #eee;
-        width: 20%;
-        min-width: 200px;
-        display: flex;;
-        flex-direction: column;
-    }
-    .body .chat {
-        background: #eee;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-    }
-    .body .chat .chat-main {
-        flex-grow: 1;
-    }
-    .body .chat .chat-send {
-        height: 200px; 
-        border-top: 2px solid #ccc; 
-    /*            display: flex; 
-        flex-direction: column;*/
-    }
-
-    .list-header{
-        width: 100%;
-        font-size: 20px;
-        text-align: center;
-        padding-bottom: 10px;
-        padding-top: 10px;
-        border-bottom: 2px solid #000;
-    }
-
-    .select-icon{
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        font-size: 30px;
-        border-bottom: 2px solid #000;
-    }
-    .chat_icon{
-        width: 50%;
-        text-align: center;
-        padding-bottom: 10px;
-        padding-top: 10px;
-    }
-    .chat_icon_click{
-        width: 50%;
-        text-align: center;
-        padding-bottom: 10px;
-        padding-top: 10px;
-        border-bottom: 2px solid #f00;
-    }
-    .friend_icon{
-        width: 50%;
-        text-align: center;
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-
-    .bottom_hr{
-        border-bottom: 2px solid #f00;
-    }
-
-    .bottom_chat{
-        border-bottom: 2px solid #f00;
-    }
-
-    .friend_icon_click{
-        width: 50%;
-        text-align: center;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #f00;
-    }
-    .frineds-list{
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .friend{
-        font-size: 20px;
-        text-align: center;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        width: 100%;
-        border-bottom: 1px solid #000;
-    }
-
-    .chat{
-        font-size: 20px;
-        text-align: center;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        width: 950px;
-        border-bottom: 1px solid #000;
-        display: inline-block;
-    }
-
-    .chat_selected{
-        font-size: 20px;
-        text-align: center;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        width: 100%;
-        border-bottom: 2px solid #0f0;
-        display: inline-block;
-    }
-
-    .chat_not_selected{
-        font-size: 20px;
-        text-align: center;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        width: 100%;
-        border-bottom: 2px solid #000;
-        display: inline-block;
-    }
-
-    .op{
-        display: none
-    }
-
-    .backcolor{
-        background: #eee;
-    }
-
-    .chat-main{
-        display: flex;
-        flex-direction: column;
-        position: relative;
-    }
-    .message_left{
-        max-width: 400px;
-        margin-right:auto;
-        word-wrap:break-word;
-        display: block;
-        text-align: left;
-        padding: 10px;
-        border: 2px solid #000;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        border-radius: 6px;
-        margin-left: 10px;
-    }
-    .message_right{
-        max-width: 400px;
-        /*position: fixed;
-        right: 0;*/
-        margin-left: auto;
-        word-wrap:break-word;
-        display:block;
-        text-align: left;
-        padding: 10px;
-        border: 2px solid #000;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        border-radius: 6px;
-        margin-right: 10px;
-    }
-
-    .chat-main{
-        height: 800px;
-        width: 900px;
-        overflow:auto;
-    }
-</style>
 {% endblock %}
 

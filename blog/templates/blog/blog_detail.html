@@ -6,7 +6,7 @@
 <!-- 加载模板标签 -->
 {% load comment_tags %}
 {% load likes_tags %}
-
+{% load user_tags %}
 
 {% block head_extra %}
     <link rel="stylesheet" type="text/css" href="{% static 'blog.css' %}">
@@ -156,6 +156,11 @@
                                     <span class="liked-num">{% get_like_count comment %}</span>
                                 </div>
                                 <a href="javascript:reply({{ comment.pk }});">回复</a>
+                                {% get_if_friend user comment.user as iffriend %}
+                                {% if iffriend == 0 %}
+                                    <button onclick="makeFriend(this,{{comment.user.pk}})" id="{{comment.user.pk}}">添加好友</button>
+                                {% endif %}
+                                <a href="{% url 'privateLetter'%}?chater={{comment.user.username}}&mode=1">私信</a>
                                 {% for reply in comment.root_comment.all.reverse %}
                                     <div class="reply">
                                         <span>{{ reply.user.get_nickname_or_username }}</span>
