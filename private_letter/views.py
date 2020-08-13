@@ -14,9 +14,37 @@ from .models import Chat,PrivateLetter
 
 
 def privateLetter(request):
-	chats = Chat.objects.filter(Q(user1 = request.user) | Q(user2 = request.user))
-	friends = FriendsSystem.objects.filter(Q(user1 = request.user) | Q(user2 = request.user))
 	context = {}
+	mode = request.GET.get("mode",'0')
+	print("mode="+mode)
+	context["iffromWeb"] = 0
+	if(str(mode) == '1'):
+		print("inter")
+		context["iffromWeb"] = 1
+		chater = request.GET.get("chater","")
+		chater = User.objects.get(username = chater)
+		ifchat = Chat.objects.filter(Q(user1 = request.user) | Q(user2 = request.user)).filter(Q(user1 = chater) | Q(user2 = chater))
+		if(ifchat):
+			privateLetters = PrivateLetter.objects.filter(chat = ifchat[0])
+			context["privateLetters"] = privateLetters
+			context["selectedpk"] = ifchat[0].pk
+			print("havechat")
+		else:
+			toChater = Chat()
+			toChater.user1 = request.user
+			toChater.user2 = chater
+			toChater.unread = 0
+			toChater.save()
+			context["selectedpk"] = toChater.pk
+			print("nothaveChat")
+	else:
+		print("notenter")
+
+
+
+	chats = Chat.objects.filter(Q(user1 = request.user) | Q(user2 = request.user))
+	friends = FriendsSystem.objects.filter((Q(user1 = request.user) | Q(user2 = request.user)),agree = 1)
+	
 	context["chats"] = chats
 	context["friends"] = friends
 	for chat in chats:
@@ -24,7 +52,7 @@ def privateLetter(request):
 		notification = Notification.objects.filter(recipient = request.user,unread = True,
 			action_object_content_type = contentType,action_object_object_id = chat.pk)
 		chat.unread = notification.count()
-		print(notification.count())
+		# print(notification.count())
 	# for i in friends:
 	# 	print(i.user1.username)
 	return render(request, 'privateLetter/test.html',context)
@@ -45,9 +73,9 @@ def chatMessage(request):
 		notification.delete()
 	data = []
 	for i in privateLetters:
-		str = privateLetter2json(i,request.user)
-		data.append(str)
-	print(data)
+		strs = privateLetter2json(i,request.user)
+		data.append(strs)
+	# print(data)
 	return JsonResponse({
 			'status': "success",
 			'chatMessage':data,
@@ -187,3 +215,46 @@ def appChatSend(request):
 	        'statue':status,
 	        'text':"failed"
 	    },"data":data},safe=False)
+
+
+
+def webNotifyJson(chat):
+	return {
+		'unreadnum':chat.unread,
+		'pk':chat.pk,
+	}
+
+def webChatNotify(request):
+	chats = Chat.objects.filter(Q(user1 = request.user) | Q(user2 = request.user))
+	chatid = request.GET.get('id','')
+	# print(chatid)
+	text = []
+	data = []
+	for chat in chats:
+		contentType = ContentType.objects.get_for_model(chat)
+		notification = Notification.objects.filter(recipient = request.user,unread = True,
+			action_object_content_type = contentType,action_object_object_id = chat.pk)
+		chat.unread = notification.count()
+		if(str(chat.pk)==chatid):
+			privateLetters = PrivateLetter.objects.filter(chat = chat)
+			# print("failed")
+			# print(chat.unread)
+			for i in privateLetters[(len(privateLetters)-chat.unread):len(privateLetters)]:
+				# print("success")
+				text.append({'text':i.text})
+				# print(i.text)
+			for i in notification:
+				i.unread = False
+				i.save()
+			chat.unread = 0
+		string = webNotifyJson(chat)
+		data.append(string)
+	return JsonResponse({
+		'text':text,
+		'data':data,
+	})
+
+	
+
+	
+
