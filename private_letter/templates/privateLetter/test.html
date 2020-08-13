@@ -155,6 +155,7 @@
         alert("NMD");
     }
 
+    var sendId = 0;
     function friendNotifyList(){
         $.ajax({
             url:"{% url 'friendNotifyList' %}",
@@ -245,6 +246,7 @@
         $(".chat_selected").attr("class","chat_not_selected");
         $(object).attr("class","chat_selected");
         $(".chatid").attr("id",id);
+        sendId = id;
         $.ajax({
             url: "{% url 'chatMessage' %}",
             type:'GET',
@@ -284,7 +286,8 @@
         var name = $("#user").val();
         console.log(name);
         var formData = new FormData();
-        id = $(".chatid").attr("id");
+        id = sendId;
+        // id = $(".chatid").attr("id");
         // console.log($(".chatid").id);
         $("#post_error").text('');
         if($('#post_text').val().trim()==''){
