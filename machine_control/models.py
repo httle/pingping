@@ -12,8 +12,8 @@ class Practice(models.Model):
 		return '<practice:%s>' % self.user
 
 	class Meta:
-        # 这是django的内嵌类
-        ordering=['-created_time']
+		ordering=['-created_time']
+
 
 class PracticeImg(models.Model):
 	practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
