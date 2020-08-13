@@ -54,7 +54,7 @@
     <div class="body">
         <div class="all-list">
             <div class="list-header">
-                <span class="glyphicon glyphicon-envelope" >私信消息</span>
+                <span class="glyphicon glyphicon-envelope" onclick="test()">私信消息</span>
             </div>
             <div class="select-icon">
                 <div class="chat_icon bottom_hr">
@@ -104,8 +104,7 @@
         <div class="chat">
             <div class="chat-main">
             </div>
-            <div class="chatid" id=""></div>
-            <!-- {% if iffromWeb == 1 %}
+            {% if iffromWeb == 1 %}
                 <div class="chatid" id="{{selectedpk}}">
                     {% for privateLetter in privateLetters %}
                         {% if user == privateLetter.sender %}
@@ -118,7 +117,7 @@
                 </div>
             {% else %}
                 <div class="chatid" id=""></div>
-            {% endif %} -->
+            {% endif %}
             <div class="chat-send">
                 <!-- <form id="post_chat" action="{% url 'sendChatMes'%}" method="POST" style="overflow: hidden;" ENCTYPE="multipart/form-data">
                     {% csrf_token %}
@@ -375,6 +374,226 @@
             })
         });
 </script>
+<style type="text/css">
+    /** { margin: 0; padding: 0; }*/
+    body {
+        background: #d2d2d2;
+    }
+    .container {
+        /*自身的样式*/
+        width: 1170px;
+        min-width: 500px;
+        margin: 5vh auto 0;
+        box-shadow: #b9b9b9 0 0 6px 4px;
+        background-color: white;
+        border-radius: 6px;
+        overflow: hidden;
+        /*内部元素的布局*/
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+    .header {
+        padding: 6px 0;
+        text-align: center;
+    }
+    .body {
+        /*自身样式*/
+        height: 86vh;
+        border-top: 1px solid #aaa;
+        /*内部元素的布局方式*/
+        display: flex;
+    }
+    .body .all-list {
+        border-right: 1px solid #aaa;
+        background: #eee;
+        width: 20%;
+        min-width: 200px;
+        display: flex;;
+        flex-direction: column;
+    }
+    .body .chat {
+        background: #eee;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .body .chat .chat-main {
+        flex-grow: 1;
+    }
+    .body .chat .chat-send {
+        height: 200px; 
+        border-top: 2px solid #ccc; 
+    /*            display: flex; 
+        flex-direction: column;*/
+    }
 
+    .list-header{
+        width: 100%;
+        font-size: 20px;
+        text-align: center;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        border-bottom: 2px solid #000;
+    }
+
+    .select-icon{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        font-size: 30px;
+        border-bottom: 2px solid #000;
+    }
+    .chat_icon{
+        width: 50%;
+        text-align: center;
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+    .chat_icon_click{
+        width: 50%;
+        text-align: center;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        border-bottom: 2px solid #f00;
+    }
+    .friend_icon{
+        width: 50%;
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .bottom_hr{
+        border-bottom: 2px solid #f00;
+    }
+
+    .bottom_chat{
+        border-bottom: 2px solid #f00;
+    }
+
+    .friend_icon_click{
+        width: 50%;
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f00;
+    }
+    .frineds-list{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .friend{
+        font-size: 20px;
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 100%;
+        border-bottom: 1px solid #000;
+    }
+
+    .chat{
+        font-size: 20px;
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 950px;
+        border-bottom: 1px solid #000;
+        display: inline-block;
+    }
+
+    .chat_selected{
+        font-size: 20px;
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 100%;
+        border-bottom: 2px solid #0f0;
+        display: inline-block;
+    }
+
+    .chat_not_selected{
+        font-size: 20px;
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 100%;
+        border-bottom: 2px solid #000;
+        display: inline-block;
+    }
+
+    .op{
+        display: none
+    }
+
+    .backcolor{
+        background: #eee;
+    }
+
+    .chat-main{
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+    .message_left{
+        max-width: 400px;
+        margin-right:auto;
+        word-wrap:break-word;
+        display: block;
+        text-align: left;
+        padding: 10px;
+        border: 2px solid #000;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        margin-left: 10px;
+    }
+    .message_right{
+        max-width: 400px;
+        /*position: fixed;
+        right: 0;*/
+        margin-left: auto;
+        word-wrap:break-word;
+        display:block;
+        text-align: left;
+        padding: 10px;
+        border: 2px solid #000;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        margin-right: 10px;
+    }
+
+    .chat-main{
+        height: 800px;
+        width: 900px;
+        overflow:auto;
+    }
+
+    .friendnotify{
+        font-size: 20px;
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 100%;
+        border-bottom: 2px solid #000;
+        display: inline-block;
+    }
+
+    .friend_notify_list{
+        margin-right:auto;
+        word-wrap:break-word;
+        display: block;
+        width: 90%;
+        padding: 10px;
+        border: 2px solid #000;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        margin-left: 10px;
+    }
+</style>
 {% endblock %}
 
