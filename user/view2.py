@@ -12,11 +12,10 @@ from .models import FriendsSystem
 def sendFriendNotify(request):
 	pk = request.GET.get("id","0")
 	friend = User.objects.get(pk = pk)
-	friendMake = FriendsSystem.objects.filter(Q(user1 = request.user) | Q(user2 = request.user)).filter(Q(user1 = friend) | Q(user2 = friend))
+	friendMake = FriendsSystem.objects.filter(Q(user1 = request.user) | Q(user2 = request.user)).filter(Q(user1 = friend) | Q(user2 = friend)).filter(ifprocess=0)
 	if (friendMake):
-		if(friendMake[0].ifprocess==0 ):
-			ifsend = 1
-			ifsuccess = 0
+		ifsend = 1
+		ifsuccess = 0
 	else:
 		makeFriend = FriendsSystem()
 		makeFriend.user1 = request.user
@@ -57,7 +56,7 @@ def friendProcess(request):
 	if(mode==0):
 		friendMake.ifprocess = True
 		friendMake.agree = 2
-		friendMake.save()
+		friendMake.delete()
 		status = 1
 	elif(mode==1):
 		friendMake.ifprocess = True

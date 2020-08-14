@@ -8,7 +8,7 @@ register = template.Library()
 
 @register.simple_tag
 def get_if_friend(user1,user2):
-    iffriend = FriendsSystem.objects.filter(Q(user1 = user1) | Q(user2 = user1)).filter(Q(user2 = user2) | Q(user1 = user2))
+    iffriend = FriendsSystem.objects.filter(Q(user1 = user1) | Q(user2 = user1)).filter(Q(user2 = user2) | Q(user1 = user2)).filter(ifprocess=1)
     if(iffriend):
         if(iffriend[0].agree==1):
         	status = 1
