@@ -62,6 +62,7 @@ def friendNotifyList(request):
 def friendProcess(request):
 	mode = int(request.GET.get('mode',''))
 	pk = int(request.GET.get('id',-1))
+	url = "http://47.93.251.168:8000/privaletter/"
 	if(pk!=-1):
 		friendMake = FriendsSystem.objects.get(pk=pk)
 	status = 0
