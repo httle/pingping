@@ -47,12 +47,12 @@ def startChat(request):
 			ifhave = 0
 			chat = Chat()
 			chat.user1 = request.user
-			chat.user2 = chatobj
+			chat.user2 = chatobj[0]
 			chat.save()
 			return JsonResponse({
 					"status":1,
 					"ifhave":ifhave,
-					"id":chatpk,
+					"id":chat.pk,
 					"objname":chatobj[0].username,
 				})
 	return JsonResponse({
