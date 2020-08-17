@@ -44,7 +44,10 @@ def privateLetter(request):
 
 	chats = Chat.objects.filter(Q(user1 = request.user) | Q(user2 = request.user))
 	friends = FriendsSystem.objects.filter((Q(user1 = request.user) | Q(user2 = request.user)),agree = 1)
-	
+	frindSystem = FriendsSystem()
+	friendType = ContentType.objects.get_for_model(frindSystem)
+	friendNotify = Notification.objects.filter(recipient = request.user,action_object_content_type = friendType).count()
+	context["friendNotify"] = friendNotify
 	context["chats"] = chats
 	context["friends"] = friends
 	for chat in chats:

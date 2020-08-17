@@ -13,7 +13,7 @@
     <script type="text/javascript" src="{% static 'privateletter.js' %}"></script>
     <style type="text/css">
     .message_left{
-        width: min-content;
+        width: max-content;
         max-width: 400px;
         margin-right:auto;
         word-wrap:break-word;
@@ -27,7 +27,7 @@
         margin-left: 10px;
     }
     .message_right{
-        width: min-content;
+        width: max-content;
         max-width: 400px;
         /*position: fixed;
         right: 0;*/
@@ -75,27 +75,28 @@
                 {% endfor %}
             </div>
             <div class="chats-list" >
-                <div class="friendnotify" onclick="friendNotifyList()"><span class="glyphicon glyphicon-volume-up"></span></div>
+                <div class="friendnotify" onclick="friendNotifyList()"><span class="glyphicon glyphicon-volume-up"></span>
+                <span class="badge" id="friendNotify">{% if friendNotify > 0 %}{{ friendNotify }}{% endif %}</span></div>
                 {% for chat in chats %} 
                     {% if user == chat.user1 %}
                         {% if iffromWeb == 1 %}
                             {% if chat.pk == selectedpk %}
-                                <div class="chat_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                                <div class="chat_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</span></div>
                             {% else %}
-                                <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                                <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</span></div>
                             {% endif %}
                         {% else %}
-                            <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                            <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user2 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</span></div>
                         {% endif %}
                     {% else %}
                         {% if iffromWeb == 1 %}
                             {% if chat.pk == selectedpk %}
-                                <div class="chat_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                                <div class="chat_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</span></div>
                             {% else %}
-                                <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                                <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</span></div>
                             {% endif %}
                         {% else %}
-                            <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</div>
+                            <div class="chat_not_selected" onclick="getChatMes(this,{{chat.pk}})" name="{{chat.pk}}">{{ chat.user1 }}<span class="badge unread-count chatmes" id="{{chat.pk}}">{% if chat.unread > 0 %}{{ chat.unread }}{% endif %}</span></div>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
@@ -232,6 +233,16 @@
                             console.log(message_html);
                             $(".chat-main").append(message_html);
                         };
+                    }else{
+                        $(".friend_icon").removeClass("bottom_hr");
+                        $(".chat_icon").addClass("bottom_hr");
+                        $(".frineds-list").addClass("op");
+                        $(".chats-list").removeClass("op");
+                        $(".chat-main").empty();
+                        $("div[name='"+data["id"]+"']").attr("class","chat_selected");
+                        var chat_html = '<div class="chat_selected" onclick="getChatMes(this,'+data["id"]+')" name="'+data["id"]+'">'+data["objname"]+'<span class="badge unread-count chatmes" id="'+data["id"]+'"></span></div>';
+                        $(".chats-list").append(chat_html);
+                        sendId = data["id"];
                     }
                 }
             },
@@ -328,7 +339,8 @@
     var mesChange = {
         alarm_Timer:null,
         mesNotify:function(){
-            var id = $(".chatid").attr("id");
+            id = sendId;
+            // var id = $(".chatid").attr("id");
             $.ajax({
                 url:"{% url 'webNotify' %}",
                 type:'GET',

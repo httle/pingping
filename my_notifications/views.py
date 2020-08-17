@@ -14,7 +14,7 @@ def my_notifications(request):
     a = Chat()
     contentType = ContentType.objects.get_for_model(a)
     notifications = Notification.objects.exclude(action_object_content_type = contentType).filter(recipient = request.user
-        ,unread=True)
+        )
     context={}
     context["notifications"] = notifications
     return render(request, 'my_notifications/my_notifications.html',context)
