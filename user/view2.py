@@ -11,7 +11,7 @@ from django.contrib import auth
 from django.urls import reverse
 from django.http import JsonResponse
 from .models import FriendsSystem
-
+from private_letter.models import Chat
 
 
 def sendFriendNotify(request):
