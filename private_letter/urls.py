@@ -10,4 +10,5 @@ urlpatterns=[
     path('appDetailChat',views.appDetailChat),
     path('appChatSend',views.appChatSend),
     path('startChat',view2.startChat,name='startChat'),
+    path('appStartChat',view2.appStartChat),
 ]

@@ -11,6 +11,8 @@ from user.models import FriendsSystem
 from .models import Chat,PrivateLetter
 
 
+
+
 def privateLetter2json(chatMessage,user):
 
 	return{
@@ -58,3 +60,24 @@ def startChat(request):
 	return JsonResponse({
 			"status":0
 		})
+
+def appStartChat(request):
+	username = request.GET.get('username','')
+	chatername = request.GET.get('chatername','')
+	print(username,chatername)
+	user = User.objects.get(username = username)
+	chater = User.objects.get(username = chatername)
+	chat = Chat.objects.filter(Q(user1 = user) | Q(user2 = user)).filter(Q(user1 = chater) | Q(user2 = chater))
+	if chat:
+		return JsonResponse({
+				"pk":chat[0].pk
+			})
+	else:
+		startchat = Chat()
+		startchat.user1 = user
+		startchat.user2 = chater
+		startchat.unread = 0
+		startchat.save()
+		return JsonResponse({
+				"pk":startchat.pk
+			})

@@ -17,4 +17,8 @@ urlpatterns = [
     path('makeFriend',view2.sendFriendNotify,name="make_friend"),
     path('friendNotifyList',view2.friendNotifyList,name="friendNotifyList"),
     path('friendProcess',view2.friendProcess,name="friendProcess"),
+    path('appFriendList',view2.appFriendList),
+    path('appFriendProcessList',view2.appFriendProcessList),
+    path('appFriendProcess',view2.appFriendProcess),
+    path('appMakeFriend',view2.appMakeFriend),
 ]
