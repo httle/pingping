@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from private_letter.models import PrivateLetter,Chat
 from comment.models import Comment
+from user.models import FriendsSystem
 import re
 
 
@@ -93,7 +94,10 @@ def app_notification_change(request):
 def app_notification(request):
     user = request.GET.get('user','')
     user = get_object_or_404(User,username = user)
-    notifications = user.notifications.all()
+    a = Chat()
+    contentType = ContentType.objects.get_for_model(a)
+    notifications = Notification.objects.exclude(action_object_content_type = contentType).filter(recipient = user
+        )
     messages = []
     num = 0
     for i in notifications:
@@ -105,18 +109,60 @@ def app_notification(request):
 def message2json(message):
     # 数据转化为json
     # print(message.action_object.pk)
-    comment = Comment.objects.get(pk = message.action_object.pk)
-    return{
-        'pk':message.pk,
-        'actor':message.actor.username,
-        'verb':message.verb,
-        'description':message.description,
-        'time':message.timesince(),
-        "unread":message.unread,
-        'blog_pk':comment.object_id,
-        'root_pk':comment.root.pk if comment.root!=None else 0,
+    # comment = Comment.objects.get(pk = message.action_object.pk)
+    # return{
+    #     'pk':message.pk,
+    #     'actor':message.actor.username,
+    #     'verb':message.verb,
+    #     'description':message.description,
+    #     'time':message.timesince(),
+    #     "unread":message.unread,
+    #     'blog_pk':comment.object_id,
+    #     'root_pk':comment.root.pk if comment.root!=None else 0,
 
-    }
+    # }
+    a = FriendsSystem()
+    contentType = ContentType.objects.get_for_model(a)
+    if(message.action_object_content_type==contentType):
+        friendNotify = 1
+        return{
+            'pk':message.pk,
+            'actor':message.actor.username,
+            'verb':message.verb,
+            'description':message.description,
+            'time':message.timesince(),
+            "unread":message.unread,
+            'blog_pk':0,
+            'root_pk':0,
+            'friendNotify':friendNotify,
+
+        }
+    elif(message.action_object==None):
+        return{
+            'pk':message.pk,
+            'actor':message.actor.username,
+            'verb':message.verb,
+            'description':message.description,
+            'time':message.timesince(),
+            "unread":message.unread,
+            'blog_pk':0,
+            'root_pk':0,
+            'friendNotify':2,
+        }
+    else:
+        comment = Comment.objects.get(pk = message.action_object.pk)
+        return{
+            'pk':message.pk,
+            'actor':message.actor.username,
+            'verb':message.verb,
+            'description':message.description,
+            'time':message.timesince(),
+            "unread":message.unread,
+            'blog_pk':comment.object_id,
+            'root_pk':comment.root.pk if comment.root!=None else 0,
+            'friendNotify':0,
+        }
+
 def app_notification_new(request):
     user = request.GET.get('user','')
     user = get_object_or_404(User,username = user)

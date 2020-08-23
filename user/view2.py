@@ -74,7 +74,7 @@ def friendProcess(request):
 		friendMake.delete()
 		verb = "您收到一条好友消息"
 		description = friendMake.agreereceiver.username+"拒绝了你的好友请求"
-		notify.send(recipient = friendMake.agreesender,sender = friendMake.agreereceiver,verb = verb,description = description,url =url)
+		notify.send(recipient = friendMake.agreesender,sender = friendMake.agreereceiver,verb = verb,description = description,url =url,action_object = None)
 		status = 1
 	elif(mode==1):
 		friendMake.ifprocess = True
@@ -83,7 +83,7 @@ def friendProcess(request):
 		status = 1
 		verb = "您收到一条好友消息"
 		description = friendMake.agreereceiver.username+"接受了你的好友请求"
-		notify.send(recipient = friendMake.agreesender,sender = friendMake.agreereceiver,verb = verb,description = description,url =url)
+		notify.send(recipient = friendMake.agreesender,sender = friendMake.agreereceiver,verb = verb,description = description,url =url,action_object = friendMake)
 	return JsonResponse({
 			"status":status,
 			"friend":friendMake.agreesender.username,
@@ -147,17 +147,24 @@ def appFriendProcess(request):
 	pk = request.GET.get('pk',-1)
 	mode = request.GET.get('mode','0')
 	print("pk:"+pk+"and mode:"+mode)
+	url = "http://47.93.251.168:8000/privaletter/"
 	if(pk!=-1):
 		friendMake = FriendsSystem.objects.get(pk=pk)
 	if(int(mode)==0):
 		friendMake.ifprocess = True
 		friendMake.agree = 2
 		friendMake.delete()
+		verb = "您收到一条好友消息"
+		description = friendMake.agreereceiver.username+"拒绝了你的好友请求"
+		notify.send(recipient = friendMake.agreesender,sender = friendMake.agreereceiver,verb = verb,description = description,url =url,action_object = None)
 		print("frienddelete")
 	else:
 		friendMake.ifprocess = True
 		friendMake.agree = 1
 		friendMake.save()
+		verb = "您收到一条好友消息"
+		description = friendMake.agreereceiver.username+"接受了你的好友请求"
+		notify.send(recipient = friendMake.agreesender,sender = friendMake.agreereceiver,verb = verb,description = description,url =url,action_object = friendMake)
 		print("friendMake")
 	return JsonResponse({
 			"status":0,
@@ -185,7 +192,10 @@ def appMakeFriend(request):
 		makeFriend.agreereceiver = friend
 		makeFriend.save()
 		status = 2
-
+		url = "http://47.93.251.168:8000/privaletter/"
+		verb = "您收到一条好友请求"
+		description = user.username+"向你发起了好友请求"
+		notify.send(user,recipient = friend,verb = verb,action_object = makeFriend,url = url,description = description)
 	return JsonResponse({
 			"status":status,
 			# "text":"success",
