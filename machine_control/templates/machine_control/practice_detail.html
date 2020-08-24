@@ -25,25 +25,40 @@
             height:200px;
             
         }
+        .over {
+            position: fixed;
+            left:0;
+            top:0;
+            width:100%;
+            z-index:100;
+        }
+        .tempContainer{
+            position:fixed;
+            width:100%;
+            margin-right:0px;
+            margin-left:0px;
+            text-align:center;
+            z-index:101;
+        }
         .ImgAmplify{
             background-position: 0px 0px, 10px 10px;
             background-size: 20px 20px;
             background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%),linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);
             cursor: zoom-in;
         }
-
 </style>
 
 {% endblock %}
 
 {# 页面内容 #}
 {% block content %}
+<div class="over"></div>
 <div class="col-xs-12 col-xs-of-1">
     <div id="container" style="min-width:400px;height:400px"></div>
     <div class="container">
         {% for img in imgs %}
-            <div class="float">
-                    <img src="/media/{{img.img}}" alt="">
+            <div class="float amplifyImg">
+                    <img src="http://47.93.251.168:8000{{img.img.url}}" alt="">
             </div>
         {% endfor %}
     </div>
@@ -92,6 +107,79 @@
                 }]
             }]
         });
+        $(document).ready(function () {
+            var imgsObj = $('.amplifyImg img');//需要放大的图像
+            if(imgsObj){
+                $.each(imgsObj,function(){
+                    $(this).click(function(){
+                        var currImg = $(this);
+                        coverLayer(1);
+                        var tempContainer = $('<div class="tempContainer"></div>');//图片容器
+                        with(tempContainer){//width方法等同于$(this)
+                            appendTo("body");
+                            var windowWidth=$(window).width();
+                            var windowHeight=$(window).height();
+                            // console.log(windowWidth);
+                            // console.log(windowHeight);
 
+                            //获取图片原始宽度、高度
+                            var orignImg = new Image();
+                            orignImg.src ="http://"+currImg.attr("src").slice(7) ;
+                            console.log(orignImg.src);
+                            var currImgWidth= orignImg.width;
+                            var currImgHeight = orignImg.height;
+                            // console.log(currImgWidth);
+                            // console.log(currImgHeight);
+                            var lastwidth = currImgWidth;
+                            var lastheight = currImgHeight;
+                            // css('top',0);
+                            if(currImgWidth>windowWidth){
+                                currImgWidth = windowWidth*0.9;
+                                percent = currImgWidth/lastwidth;
+                                currImgHeight = percent*lastheight;
+                            }
+                            console.log(currImgWidth);
+                            console.log(currImgHeight);
+                            if(currImgHeight>windowHeight){
+                                lastheight = currImgHeight;
+                                lastwidth = currImgWidth;
+                                currImgHeight = windowHeight*0.9;
+                                percent = currImgHeight/lastheight;
+                                currImgWidth = percent*lastwidth;
+                            }
+                            console.log(currImgWidth);
+                            console.log(currImgHeight);
+                            console.log(lastwidth);
+                            console.log(lastheight);
+                            html('<img src='+orignImg.src+' height='+currImgHeight+' width='+currImgWidth+'>');
+                            var topHeight=(windowHeight - currImgHeight)/2;
+                            css('top',topHeight);
+                        }
+                        tempContainer.click(function(){
+                            $(this).remove();
+                            coverLayer(0);
+                        });
+                    });
+                });
+            }
+            else{
+                return false;
+            }
+            //使用禁用蒙层效果
+            function coverLayer(tag){
+                with($('.over')){
+                    if(tag==1){
+                        css('height',$(document).height());
+                        css('display','block');
+                        css('opacity',1);
+                        css("background-color","#FFFFFF");
+                        css("background-color","rgba(0,0,0,0.7)" );  //蒙层透明度
+                    }
+                    else{
+                        css('display','none');
+                    }
+                }
+            }
+        });
 </script>
 {% endblock %}
