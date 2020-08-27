@@ -35,7 +35,7 @@
                         <a href="{% url 'home' %}">首页</a>
                     </li>
                     <li class="{% block nav_blog_active %}{% endblock %}">
-                        <a href="{% url 'blog_list' %}">博客</a>
+                        <a href="{% url 'blog_list' %}">论坛</a>
                     </li>
                     <li class="{% block nav_instructor_active %}{% endblock %}">
                         <a href="{% url 'instructor_list' %}">教学视频</a>
@@ -60,10 +60,11 @@
                                 <li><a href="{% url 'user_info' %}">个人中心</a></li>
                                 <li><a href="{% url 'my_notifications' %}">我的消息<span class="badge unread-count live_notify_badge mes">{% if unread_count > 0 %}{{ unread_count }}{% endif %}</span></a></li>
                                 <li><a href="{% url 'privateLetter' %}" >私信<span class="badge unread-count live_notify_badge chatMes">{% if unread_count > 0 %}{{ unread_count }}{% endif %}</span></a></li>
-                                <li><a href="{% url 'practice_list' %}">我的训练</a></li>
+                                <li><a href="{% url 'practice_list' %}">训练结果</a></li>
+                                <li><a href="{% url 'practice_list' %}">训练直播</a></li>
                                 {% if user.is_staff or user.is_superuser %}
                                     <li><a href="{% url 'admin:index' %}">后台管理</a></li>
-                                    <li><a href="{% url 'count' %}">访问统计</a></li>
+                                    <li><a href="http://lxyzhiters.vipgz1.idcfengye.com/">访问统计</a></li>
                                 {% endif %}
                                 <!-- <li><a href="{% url 'logout' %}?from={{ request.get_full_path }}">退出</a></li> -->
                                 <li><a href="{% url 'logout' %}">退出</a></li>
