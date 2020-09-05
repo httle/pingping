@@ -6,11 +6,36 @@ import socket
 import time
 from multiprocessing import Process
 from django.contrib.auth.models import User
-from .models import Practice,PracticeImg
+from .models import Practice,PracticeImg,MachineControl
 # Create your views here.
 def appControl(request):
     statue = 1
     text = "发送成功"
+    username = request.POST.get('username','')
+    machineNum = request.POST.get('machineNum',0)
+    user = User.objects.get(username = username)
+    machine = MachineControl.objects.filter(machine_num = int(machineNum))
+    ifcoach = request.POST.get('ifcoach',0)
+    print(ifcoach)
+    if machine:
+        if(machine[0].user == user and machine[0].ifusing==1):
+            print("machineUsingSuccess")
+        else:
+            statue = 0
+            text = "操作失败"
+            return JsonResponse({"data":{
+                    'statue':statue,
+                    'text': text,
+                }},safe=False)
+    else:
+        statue = 0
+        text = "操作失败"
+        return JsonResponse({"data":{
+                    'statue':statue,
+                    'text': text,
+                }},safe=False)
+
+
     ifup = request.POST.get('ifup',0)
     upSpeed = request.POST.get('upSpeed',0)
     ifmid = request.POST.get('ifmid',0)
@@ -21,6 +46,8 @@ def appControl(request):
     ifend = request.POST.get('ifend',1)
     mode = request.POST.get('mode',0)
     sendpractice = request.POST.get('sendpractice',0)
+    data  = request.POST.get('data','')
+    print(data)
     print(ifcon)
     print(ifup,upSpeed)
     print(ifmid,midSpeed)
@@ -30,6 +57,7 @@ def appControl(request):
         'ifend':ifend,
         'mainControl':ifcon,
         'mode':mode,
+        'actionList':data,
         'data':{
             'ifup':ifup,
             'upSpeed':upSpeed,
