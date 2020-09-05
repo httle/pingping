@@ -150,3 +150,27 @@ def reply2json(reply):
 	}
 
 
+
+def appAddReply(request):
+	username = request.POST.get('user','')
+	text = request.POST.get('text','')
+	blog_pk = request.POST.get('blog_pk',0)
+	parent_pk = request.POST.get('parent_pk',0)
+	root_pk = request.POST.get('root_pk',0)
+	# print(blog_pk,parent_pk,root_pk)
+	user = User.objects.get(username = username)
+	blog = Blog.objects.get(pk = blog_pk)
+	parent = Comment.objects.get(pk = parent_pk)
+	root = Comment.objects.get(pk = root_pk)
+	reply = Comment()
+	reply.user = user
+	reply.content_object = blog
+	reply.root = root
+	reply.parent = parent
+	reply.reply_to = parent.user
+	reply.text = text
+	reply.save()
+	return JsonResponse({
+			'status':1
+		})
+	

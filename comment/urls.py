@@ -6,4 +6,5 @@ urlpatterns = [
 	path('app_comment',views.appGetComment),
 	path('app_add_comment',views.appAddComment),
 	path('app_reply',views.appReply),
+	path('appAddReply',views.appAddReply),
 ]

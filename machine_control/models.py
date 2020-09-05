@@ -19,3 +19,12 @@ class PracticeImg(models.Model):
 	practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
 	img = models.ImageField(upload_to='practiceImg')
 	
+
+class MachineControl(models.Model):
+    user = models.ForeignKey(User,on_delete = models.CASCADE,default = None,null=True,blank=True)
+    ifusing = models.BooleanField(default = False)
+    machine_num = models.IntegerField()
+
+class CoachSystem(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE,related_name = "learner")
+    coach = models.ForeignKey(User, on_delete = models.CASCADE,related_name = "coach")
