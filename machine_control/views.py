@@ -46,7 +46,7 @@ def appControl(request):
     ifend = request.POST.get('ifend',1)
     mode = request.POST.get('mode',0)
     sendpractice = request.POST.get('sendpractice',0)
-    data  = request.POST.get('data','')
+    actionList  = request.POST.get('data','')
     print(data)
     print(ifcon)
     print(ifup,upSpeed)
@@ -57,7 +57,7 @@ def appControl(request):
         'ifend':ifend,
         'mainControl':ifcon,
         'mode':mode,
-        'actionList':data,
+        'actionList':actionList,
         'data':{
             'ifup':ifup,
             'upSpeed':upSpeed,
