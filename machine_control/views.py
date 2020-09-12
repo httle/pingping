@@ -47,7 +47,7 @@ def appControl(request):
     mode = request.POST.get('mode',0)
     sendpractice = request.POST.get('sendpractice',0)
     actionList  = request.POST.get('data','')
-    print(data)
+    
     print(ifcon)
     print(ifup,upSpeed)
     print(ifmid,midSpeed)
@@ -68,6 +68,7 @@ def appControl(request):
         }
     }
     data_json = json.dumps(data)
+    print(data)
     # try:
     #     socket_web(data_json)
     # except Exception as e:
