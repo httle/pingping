@@ -74,7 +74,13 @@ def appControl(request):
     # except Exception as e:
     #     pass
     socket_web(data_json)
-
+    
+    if(int(sendpractice)==1):
+        machine[0].user = None
+        machine[0].ifusing = False
+        machine[0].save()
+        print("ENDcontrol")
+    
     if(ifup =='' or ifmid=='' or ifbo=='' or
             upSpeed=='' or midSpeed=='' or boSpeed==''):
         statue=0
