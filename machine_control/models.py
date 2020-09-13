@@ -28,3 +28,9 @@ class MachineControl(models.Model):
 class CoachSystem(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE,related_name = "learner")
     coach = models.ForeignKey(User, on_delete = models.CASCADE,related_name = "coach")
+
+class ApplySystem(models.Model):
+    applyCoach = models.ForeignKey(User, on_delete = models.CASCADE,related_name = "applyCoach")
+    applyLearner = models.ForeignKey(User, on_delete = models.CASCADE,related_name = "applyLearner")
+    ifprocess = models.BooleanField(default = False)
+    status = models.IntegerField(default = 0)

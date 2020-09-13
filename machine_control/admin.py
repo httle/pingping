@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Practice,PracticeImg,MachineControl,CoachSystem
+from .models import Practice,PracticeImg,MachineControl,CoachSystem,ApplySystem
 # Register your models here.
 
 
@@ -18,3 +18,7 @@ class MachineControlAdamin(admin.ModelAdmin):
 @admin.register(CoachSystem)
 class MachineControlAdamin(admin.ModelAdmin):
 	list_display = ('id','user','coach')
+
+@admin.register(ApplySystem)
+class ApplySystemAdmin(admin.ModelAdmin):
+	list_display = ('id','applyCoach','applyLearner','ifprocess','status')

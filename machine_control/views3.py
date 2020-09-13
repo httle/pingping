@@ -36,6 +36,11 @@ def learner2json(learner):
 		'machine_num':machine_num,
 	}
 
+def coacher2json(coach):
+	return{
+		'coach':coach.coach.username,
+	}
+
 def learnerList(request):
 	coachname = request.GET.get('coachname','')
 	print(coachname)
@@ -46,8 +51,15 @@ def learnerList(request):
 		strs = learner2json(i)
 		data.append(strs)
 	print(data)
+	coachs = CoachSystem.objects.filter(user = coach)
+	data2 = []
+	for i in coachs:
+		strs = coacher2json(i)
+		data2.append(strs)
+	print(data2)
 	return JsonResponse({
-			'data':data
+			'data':data,
+			'data2':data2
 		})
 
 def coachSet(request):
