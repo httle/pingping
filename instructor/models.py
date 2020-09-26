@@ -14,3 +14,9 @@ class Instructor(models.Model):
 
     def __str__(self):
         return '<Instructor:%s>' % self.title
+
+class AppVideo(models.Model):
+	title = models.CharField(max_length = 50,default = None,null=True,blank=True)
+	video_url = models.TextField()
+	posterImg = models.TextField(default = None,null=True,blank=True)
+
