@@ -65,7 +65,7 @@ def blog2json(blog):
         'blogNum':blog.pk,
         'title':blog.title,
         'author':blog.get_name(),
-        'time':blog.created_time,
+        'time':str(blog.created_time)[:10],
         'read':blog.get_read_num(),
         'content':blog.content,
         'blogImg':imglist,
