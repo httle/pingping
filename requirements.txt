@@ -6,6 +6,6 @@ django-notifications-hq==1.5.0
 jsonfield==2.0.2
 mysqlclient==1.4.2.post1
 numpy==1.15.0
-Pillow==6.0.0
+Pillow==8.1.1
 pytz==2019.1
 sqlparse==0.3.0
